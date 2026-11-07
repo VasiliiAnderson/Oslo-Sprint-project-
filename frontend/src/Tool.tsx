@@ -311,18 +311,14 @@ export function Tool() {
 
   return (
     <main>
-      <header className="tool-bar">
+      <div className="tool-intro navy">
         <div className="wrap">
-          <a className="brand" href="#/">Kontraktsstøtte</a>
-        </div>
-      </header>
-
-      <div className="wrap">
-        <div className="tool-intro">
           <h1 className="tool-title" tabIndex={-1}>Sjekk kontrakten</h1>
-          <p>Sammenlign kundens kontrakt med tilbudet du sendte.</p>
+          <p>Legg inn tilbudet og kundens kontrakt, og se hva som er endret.</p>
         </div>
+      </div>
 
+      <div className="wrap tool-body">
         <form onSubmit={analyze}>
           <fieldset disabled={loading}>
             <div className="columns documents">
