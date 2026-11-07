@@ -39,8 +39,8 @@ Krever `offer_quote`, `contract_quote` og `suggested_change`.
 - `må_avklares`: et relevant vilkår er uklart, står i bare ett av dokumentene, eller avhenger av vedlegg \
 eller vilkår som ikke er limt inn. Krever minst ett sitat. Sett det andre til `null`. \
 Gi et spørsmål til kunden der det er mulig.
-- `samsvarer`: vilkårene betyr det samme, også med ulik ordlyd, som «14 dager» og «to uker» regnet fra \
-samme tidspunkt. Samme tall regnet fra ulike tidspunkt samsvarer ikke. \
+- `samsvarer`: vilkårene betyr det samme, også med ulik ordlyd, som «10 000 kr» og «ti tusen kroner». \
+En frist med samme lengde regnet fra ulike tidspunkt samsvarer ikke. \
 Krever `offer_quote` og `contract_quote`. `suggested_change` skal være `null`.
 
 Ikke lag funn om temaer ingen av dokumentene omtaler, siden de ikke kan belegges med sitat.
