@@ -24,12 +24,12 @@ Et vellykket svar er HTTP 200 med `mode` (`mock` eller `live`) og `findings`. [E
 
 ### Modus og feil
 
-Mock er standard og returnerer [det faste eksempelsvaret](../examples/mock-response.json). Frontend merker resultatet som et eksempel. Live-modus skal bruke dokumentene fra forespørselen. Skjelettet gir foreløpig HTTP 503 i live-modus frem til modellklienten er på plass.
+Mock er standard og returnerer [det faste eksempelsvaret](../examples/mock-response.json). Frontend merker resultatet som et eksempel. Live-modus bruker dokumentene fra forespørselen når promptmodulen og modellinnstillingene er på plass.
 
 | Status | Når den brukes |
 | --- | --- |
 | `422` | Manglende, tomme eller for lange dokumentfelt, eller ugyldig JSON. |
-| `503` | Live-modus er valgt uten gyldig lokal konfigurasjon. |
+| `503` | Analysemodus er ugyldig, eller live-modus mangler promptmodul eller gyldig lokal konfigurasjon. |
 | `502` | Feil fra modellleverandør, manglende eller ufullstendig strukturert svar, eller alle funn forkastet i kontrollen. |
 | `504` | Modellkallet overskrider tidsgrensen. |
 
