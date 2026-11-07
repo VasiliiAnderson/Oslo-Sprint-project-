@@ -1,6 +1,6 @@
 # Oslo Sprint – kontraktsstøtte
 
-En liten bedrift gjennomgår kundens kontrakt før signering, får funn med sitater og kan spørre om dem i chatten. Et tilbud kan legges til for å sammenligne vilkårene. Brukeren velger selv om et foreslått svar skal tas inn i utkastet.
+En liten bedrift gjennomgår kundens kontrakt før signering, får funn med sitater og kan spørre om dem i chatten. Et tilbud kan legges til for å sammenligne vilkårene. Chatten kan lage og revidere utkast som kan kopieres.
 
 ## Lokal oppstart
 
@@ -27,9 +27,9 @@ pnpm dev
 
 Åpne adressen Vite viser. Bruk det fiktive [revisjonsparet](examples/cases/unlimited-revisions.json) for å prøve demoflyten.
 
-1. Lim inn kundens kontrakt og trykk **Analyser**. Se funnet om ubegrensede revisjoner.
-2. Legg til tilbudet og analyser på nytt. Se avviket fra to inkluderte runder.
-3. Be chatten skrive et høflig svar som holder fast på to runder og spør hva ekstraarbeid skal koste. Velg **Bruk i utkast**, deretter **Kopier svar**.
+1. Åpne **Sjekk kontrakten**. Spør hva du bør se etter, eller bruk **Lim inn dokument** for å legge ved kontrakten. Trykk **Send**.
+2. Legg til tilbudet i samme samtale. Se avviket fra to inkluderte runder.
+3. Be chatten skrive et høflig svar som holder fast på to runder og spør hva ekstraarbeid skal koste. Be om en kortere versjon og velg **Kopier utkast**. Eksempelmodus viser et fast utkast.
 
 ## Eksempelmodus og nøkler
 

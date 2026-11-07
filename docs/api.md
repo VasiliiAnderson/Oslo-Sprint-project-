@@ -2,6 +2,12 @@
 
 Dette er byggekontrakten for kontrakt først, valgfritt tilbud og oppfølgingschat. De offentlige feltene i dagens sammenligning beholdes.
 
+## POST /chat-context
+
+Chatten bruker dette endepunktet før en kontrakt er lagt ved og når brukeren legger til dokumenter. Send `attachments` med opptil to elementer på formen `{name, text}` og `messages` med opptil seks meldinger. PDF-tekst hentes ut i nettleseren.
+
+Svaret inneholder `mode`, `roles` i samme rekkefølge som vedleggene (`contract`, `offer` eller `unclear`), en kort melding i `answer` og `needs_contract`, som angir om svaret ber om kontrakten for å komme videre. Frontend ber om avklaring ved uklare roller og bruker deretter de eksisterende endepunktene til analyse og oppfølging.
+
 ## POST /analyze
 
 JSON-feltet `contract_text` er påkrevd. `offer_text` er valgfritt og kan utelates, være `null` eller være blankt. Trim dokumenttekst, gjør blankt tilbud om til `null` og håndhev 1–20 000 tegn per dokument som faktisk er lagt inn. PDF-tekst hentes fortsatt ut i nettleseren og sendes som tekst.

@@ -7,6 +7,7 @@ export default defineConfig({
     proxy: {
       "/analyze": "http://127.0.0.1:8000",
       "/follow-up": "http://127.0.0.1:8000",
+      "/chat-context": "http://127.0.0.1:8000",
     },
   },
 });

@@ -52,6 +52,37 @@ class ChatMessage(BaseModel):
     content: MessageText
 
 
+class ChatAttachment(BaseModel):
+    name: Annotated[str, StringConstraints(min_length=1, max_length=255)]
+    text: DocumentText
+
+
+class ChatContextRequest(BaseModel):
+    attachments: list[ChatAttachment] = Field(max_length=2)
+    messages: list[ChatMessage] = Field(max_length=6)
+
+
+DocumentRole = Literal["contract", "offer", "unclear"]
+
+
+class ChatContextResult(BaseModel):
+    roles: list[DocumentRole]
+    answer: str
+    needs_contract: bool
+
+    @field_validator("answer")
+    @classmethod
+    def validate_context_answer(cls, answer: str) -> str:
+        answer = answer.strip()
+        if not 1 <= len(answer) <= 2000:
+            raise ValueError("Svaret må være mellom 1 og 2000 tegn.")
+        return answer
+
+
+class ChatContextResponse(ChatContextResult):
+    mode: Literal["mock", "live"]
+
+
 class FollowUpRequest(AnalyzeRequest):
     findings: list[Finding] = Field(max_length=6)
     messages: list[ChatMessage] = Field(min_length=1, max_length=6)

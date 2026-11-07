@@ -7,11 +7,13 @@
     "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
+    "@assistant-ui/react": "^0.15.32",
     "pdfjs-dist": "^6.5.438",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^5.0.0",

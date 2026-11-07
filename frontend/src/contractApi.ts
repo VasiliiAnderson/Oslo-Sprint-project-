@@ -8,7 +8,7 @@ export type Finding = {
   suggested_change: string | null;
 };
 
-type Mode = "mock" | "live";
+export type Mode = "mock" | "live";
 export type Analysis = { mode: Mode; findings: Finding[] };
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 export type FollowUp = {
@@ -17,7 +17,14 @@ export type FollowUp = {
   sources: { document: "offer" | "contract"; quote: string }[];
   draft: string | null;
 };
-type Documents = { offer_text: string | null; contract_text: string };
+export type Documents = { offer_text: string | null; contract_text: string };
+export type Attachment = { name: string; text: string };
+type ChatContext = {
+  mode: Mode;
+  roles: ("contract" | "offer" | "unclear")[];
+  answer: string;
+  needs_contract: boolean;
+};
 type FollowUpRequest = Documents & {
   findings: Finding[];
   messages: ChatMessage[];
@@ -29,7 +36,7 @@ export const MAX_MESSAGE_CHARS = 2_000;
 export const ANALYSIS_ERROR = "Analysen kunne ikke gjennomføres. Prøv igjen.";
 export const FOLLOW_UP_ERROR = "Meldingen kunne ikke besvares. Prøv igjen.";
 
-async function post(path: string, payload: Documents, fallback: string, signal: AbortSignal) {
+async function post(path: string, payload: object, fallback: string, signal: AbortSignal) {
   let response: Response;
   try {
     response = await fetch(path, {
@@ -48,6 +55,18 @@ async function post(path: string, payload: Documents, fallback: string, signal: 
     throw new Error(typeof detail === "string" && detail.trim() && detail.length <= 200 ? detail : fallback);
   }
   if (body?.mode !== "mock" && body?.mode !== "live") throw new Error(fallback);
+  return body;
+}
+
+export async function requestChatContext(
+  attachments: Attachment[], messages: ChatMessage[], signal: AbortSignal,
+): Promise<ChatContext> {
+  const body = await post("/chat-context", { attachments, messages }, FOLLOW_UP_ERROR, signal);
+  if (!Array.isArray(body.roles) || body.roles.length !== attachments.length ||
+      !body.roles.every((role: unknown) => role === "contract" || role === "offer" || role === "unclear") ||
+      typeof body.answer !== "string" || typeof body.needs_contract !== "boolean") {
+    throw new Error(FOLLOW_UP_ERROR);
+  }
   return body;
 }
 

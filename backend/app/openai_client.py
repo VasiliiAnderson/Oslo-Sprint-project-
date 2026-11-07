@@ -5,7 +5,7 @@ from typing import TypeVar
 from openai import APITimeoutError, OpenAI, OpenAIError
 from pydantic import BaseModel, ValidationError
 
-from .schemas import CandidateFinding, FollowUpResult, ModelFindings
+from .schemas import CandidateFinding, ChatContextResult, FollowUpResult, ModelFindings
 
 ModelResult = TypeVar("ModelResult", bound=BaseModel)
 
@@ -28,6 +28,10 @@ def generate_findings(instructions: str, user_input: str) -> list[CandidateFindi
 
 def generate_follow_up(instructions: str, user_input: str) -> FollowUpResult:
     return _generate_structured(instructions, user_input, FollowUpResult)
+
+
+def generate_chat_context(instructions: str, user_input: str) -> ChatContextResult:
+    return _generate_structured(instructions, user_input, ChatContextResult)
 
 
 def _generate_structured(

@@ -1,327 +1,231 @@
-import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
-import { ContractChat } from "./ContractChat";
-import { MAX_DOCUMENT_CHARS, type Finding } from "./contractApi";
-import { extractPdfText, PdfReadError } from "./pdfText";
-import { isSelectable, useContractReview } from "./useContractReview";
+import {
+  AssistantRuntimeProvider, MessagePrimitive, ThreadPrimitive, useAuiState, useExternalStoreRuntime,
+  type ThreadMessageLike,
+} from "@assistant-ui/react";
+import { createContext, useContext, useRef, useState, type DragEvent, type FormEvent } from "react";
+import { MAX_DOCUMENT_CHARS, MAX_MESSAGE_CHARS } from "./contractApi";
+import { extractPdfText } from "./pdfText";
+import { useContractChat, type ChatEntry } from "./useContractChat";
+import "./chat.css";
 
-type CopyState = "idle" | "copied" | "failed";
+const starterQuestions = [
+  "Gjennomgå en kontrakt",
+  "Sammenlign med tilbudet",
+  "Hjelp meg å svare kunden",
+];
 
-const statusLabels: Record<Finding["status"], string> = {
-  samsvarer: "Samsvarer",
-  avvik: "Avvik",
-  risiko: "Risiko",
-  må_avklares: "Må avklares",
+const statusLabels = {
+  risiko: "Risiko", avvik: "Avvik", må_avklares: "Må avklares", samsvarer: "Samsvarer",
 };
 
-const statusClasses: Record<Finding["status"], string> = {
-  samsvarer: "status-samsvarer",
-  avvik: "status-avvik",
-  risiko: "status-avvik",
-  må_avklares: "status-avklares",
-};
+const ChatEntries = createContext<ChatEntry[]>([]);
 
-const categoryLabels: Record<Finding["category"], string> = {
-  leveranse: "Leveranse",
-  betaling: "Betaling",
-  ekstraarbeid: "Ekstraarbeid",
-  ansvar: "Ansvar",
-};
+function ChatMessage() {
+  const id = useAuiState((state) => state.message.id);
+  const entry = useContext(ChatEntries).find((item) => item.id === id);
+  const [copyStatus, setCopyStatus] = useState("");
+  const draftRef = useRef<HTMLPreElement>(null);
+  if (!entry) return null;
+  const { draft } = entry;
 
-function formatCount(count: number) {
-  return count.toLocaleString("nb-NO");
-}
-
-type DocumentFieldProps = {
-  id: string;
-  label: string;
-  value: string;
-  disabled: boolean;
-  onChange: (value: string) => void;
-  onReadingChange: (reading: boolean) => void;
-};
-
-function hasFiles(event: DragEvent) {
-  return event.dataTransfer.types.includes("Files");
-}
-
-function DocumentField({ id, label, value, disabled, onChange, onReadingChange }: DocumentFieldProps) {
-  const [reading, setReading] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [fileNote, setFileNote] = useState("");
-  const [fileError, setFileError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const length = value.trim().length;
-  const tooLong = length > MAX_DOCUMENT_CHARS;
-  const hintId = `${id}-hint`;
-
-  async function readFile(file: File) {
-    if (reading || disabled) return;
-    setReading(true);
-    onReadingChange(true);
-    setFileNote("");
-    setFileError("");
+  async function copyDraft() {
+    if (!draft) return;
     try {
-      const { text, pages } = await extractPdfText(file);
-      onChange(text);
-      const pageLabel = pages === 1 ? "1 side" : `${pages} sider`;
-      setFileNote(`Hentet fra ${file.name} (${pageLabel}). Sjekk at teksten stemmer.`);
-    } catch (error) {
-      setFileError(error instanceof PdfReadError ? error.message : "Kunne ikke lese PDF-filen.");
-    } finally {
-      setReading(false);
-      onReadingChange(false);
+      await navigator.clipboard.writeText(draft);
+      setCopyStatus("Utkast kopiert.");
+    } catch {
+      const selection = window.getSelection();
+      if (draftRef.current && selection) {
+        const range = document.createRange();
+        range.selectNodeContents(draftRef.current);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      setCopyStatus("Kopier teksten manuelt.");
     }
   }
 
-  function handleDrop(event: DragEvent) {
-    if (!hasFiles(event)) return;
-    event.preventDefault();
-    setDragging(false);
-    const file = event.dataTransfer.files[0];
-    if (file) void readFile(file);
-  }
-
   return (
-    <div
-      className={dragging ? "field field-dragging" : "field"}
-      onDragOver={(event) => {
-        if (!hasFiles(event)) return;
-        event.preventDefault();
-        setDragging(!disabled && !reading);
-      }}
-      onDragLeave={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false);
-      }}
-      onDrop={handleDrop}
-    >
-      <div className="field-head">
-        <label htmlFor={id}>{label}</label>
-        <button
-          type="button"
-          className="button-quiet"
-          disabled={reading}
-          aria-label={`Last opp PDF for ${label.toLowerCase()}`}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          {reading ? "Leser PDF …" : "Last opp PDF"}
-        </button>
-        <input
-          ref={fileInputRef}
-          id={`${id}-file`}
-          type="file"
-          accept="application/pdf,.pdf"
-          hidden
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            event.target.value = "";
-            if (file) void readFile(file);
-          }}
-        />
+    <MessagePrimitive.Root className={`chat-message chat-message-${entry.role}`}>
+      <div className="chat-bubble">
+        {entry.files?.length ? <ul className="chat-files">{entry.files.map((file, index) =>
+          <li key={index}>{file}</li>,
+        )}</ul> : null}
+        {entry.content && <div className="chat-text"><MessagePrimitive.Parts /></div>}
+        {entry.mode === "mock" && <span className="mode">Eksempelmodus</span>}
+        {entry.findings?.length === 0 && <p>Jeg fant ingen vesentlige punkter i teksten jeg gjennomgikk.</p>}
+        {entry.findings?.map((finding) => (
+          <details className="chat-finding" key={finding.id} open={finding.status !== "samsvarer"}>
+            <summary>{statusLabels[finding.status]} · {finding.category}</summary>
+            <p>{finding.explanation}</p>
+            {finding.contract_quote && <blockquote><strong>Kontrakt</strong> {finding.contract_quote}</blockquote>}
+            {finding.offer_quote && <blockquote><strong>Tilbud</strong> {finding.offer_quote}</blockquote>}
+            {finding.suggested_change && <p>{finding.suggested_change}</p>}
+          </details>
+        ))}
+        {entry.sources?.map((source, index) => (
+          <blockquote key={index}><strong>{source.document === "contract" ? "Kontrakt" : "Tilbud"}</strong> {source.quote}</blockquote>
+        ))}
+        {draft && (
+          <div className="chat-draft">
+            <strong>Utkast</strong>
+            <pre ref={draftRef}>{draft}</pre>
+            <button type="button" className="button-quiet" onClick={copyDraft}>Kopier utkast</button>
+            <span role="status">{copyStatus}</span>
+          </div>
+        )}
       </div>
-      <textarea
-        id={id}
-        value={value}
-        readOnly={reading}
-        placeholder="Lim inn teksten, eller slipp en PDF her"
-        aria-describedby={hintId}
-        aria-invalid={tooLong}
-        onChange={(event) => {
-          setFileNote("");
-          setFileError("");
-          onChange(event.target.value);
-        }}
-      />
-      {fileError && <p className="hint hint-error" role="alert">{fileError}</p>}
-      {fileNote && <p className="hint" role="status">{fileNote}</p>}
-      <p id={hintId} className={tooLong ? "hint hint-error" : "hint"}>
-        {formatCount(length)} av {formatCount(MAX_DOCUMENT_CHARS)} tegn
-        {tooLong && ". Kort ned teksten for å analysere."}
-      </p>
-    </div>
+    </MessagePrimitive.Root>
   );
 }
 
-type FindingCardProps = {
-  finding: Finding;
-  selected: boolean;
-  onToggle: (checked: boolean) => void;
-};
-
-function FindingCard({ finding, selected, onToggle }: FindingCardProps) {
-  return (
-    <article className={`finding ${statusClasses[finding.status]}`}>
-      <h3>
-        <span className="status">{statusLabels[finding.status]}</span>
-        <span className="category">{categoryLabels[finding.category]}</span>
-      </h3>
-      <p className="explanation">{finding.explanation}</p>
-      {(finding.offer_quote || finding.contract_quote) && (
-        <div className="columns">
-          {finding.offer_quote && (
-            <div className="quote quote-offer">
-              <p className="quote-source">Tilbud</p>
-              <blockquote>{finding.offer_quote}</blockquote>
-            </div>
-          )}
-          {finding.contract_quote && (
-            <div className="quote quote-contract">
-              <p className="quote-source">Kontrakt</p>
-              <blockquote>{finding.contract_quote}</blockquote>
-            </div>
-          )}
-        </div>
-      )}
-      {isSelectable(finding) && (
-        <label className="choice">
-          <input type="checkbox" checked={selected} onChange={(event) => onToggle(event.target.checked)} />
-          <span>
-            <span className="choice-title">Ta med i svaret</span>
-            {finding.suggested_change}
-          </span>
-        </label>
-      )}
-    </article>
-  );
+function convertMessage(entry: ChatEntry): ThreadMessageLike {
+  return { id: entry.id, role: entry.role, content: [{ type: "text", text: entry.content }] };
 }
 
 export function Tool() {
-  const review = useContractReview();
-  const { analysis, selected, loading, error, reply, acceptedDraft } = review;
-  const [copyState, setCopyState] = useState<CopyState>("idle");
-  const [offerReading, setOfferReading] = useState(false);
-  const [contractReading, setContractReading] = useState(false);
-  const replyRef = useRef<HTMLTextAreaElement>(null);
+  const chat = useContractChat();
+  const [message, setMessage] = useState("");
+  const [pasting, setPasting] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  const [reading, setReading] = useState(false);
+  const [fileError, setFileError] = useState("");
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const entries = chat.pending ? [...chat.entries, chat.pending] : chat.entries;
+  const busy = Boolean(chat.pending) || reading;
+  const canSend = !busy && Boolean(message.trim() || chat.attachments.length);
+  const runtime = useExternalStoreRuntime({
+    messages: entries, convertMessage, isRunning: Boolean(chat.pending),
+    onNew: async (entry) => {
+      await chat.send(entry.content.flatMap((part) => part.type === "text" ? [part.text] : []).join("\n"));
+    },
+  });
 
-  // A file dropped beside the fields would otherwise open in the tab and lose the pasted text.
-  useEffect(() => {
-    function ignoreFileDrop(event: globalThis.DragEvent) {
-      if (event.dataTransfer?.types.includes("Files")) event.preventDefault();
+  async function addFiles(files: FileList) {
+    if (busy || !files.length) return;
+    if (files.length + chat.attachments.length > 2) {
+      setFileError("Du kan legge ved opptil to dokumenter om gangen.");
+      return;
     }
-    window.addEventListener("dragover", ignoreFileDrop);
-    window.addEventListener("drop", ignoreFileDrop);
-    return () => {
-      window.removeEventListener("dragover", ignoreFileDrop);
-      window.removeEventListener("drop", ignoreFileDrop);
-    };
-  }, []);
-
-  const canAnalyze = review.canAnalyze && !offerReading && !contractReading;
-  const findings = analysis?.findings ?? [];
-  function analyze(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!canAnalyze) return;
-    setCopyState("idle");
-    void review.analyze();
+    setReading(true);
+    setFileError("");
+    try {
+      const documents = await Promise.all(Array.from(files, async (file) => {
+        const { text } = await extractPdfText(file);
+        if (text.length > MAX_DOCUMENT_CHARS) throw new Error(`«${file.name}» er for langt. Lim inn et kortere utdrag.`);
+        return { name: file.name, text };
+      }));
+      chat.setAttachments((current) => [...current, ...documents]);
+    } catch (cause) {
+      setFileError(cause instanceof Error ? cause.message : "Kunne ikke lese vedlegget.");
+    } finally {
+      setReading(false);
+    }
   }
 
-  async function copyReply() {
-    if (reply === null) return;
-    try {
-      await navigator.clipboard.writeText(reply);
-      setCopyState("copied");
-    } catch {
-      setCopyState("failed");
-      replyRef.current?.select();
-    }
+  function addPastedText() {
+    const text = pastedText.trim();
+    if (!text || text.length > MAX_DOCUMENT_CHARS || chat.attachments.length >= 2) return;
+    chat.setAttachments((current) => [...current, { name: `Innlimt dokument ${current.length + 1}`, text }]);
+    setPastedText("");
+    setPasting(false);
+    setFileError("");
+    inputRef.current?.focus();
+  }
+
+  function dropFiles(event: DragEvent) {
+    if (!event.dataTransfer.types.includes("Files")) return;
+    event.preventDefault();
+    void addFiles(event.dataTransfer.files);
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (canSend && await chat.send(message)) setMessage("");
   }
 
   return (
-    <main>
-      <div className="tool-intro navy">
-        <div className="wrap">
-          <h1 className="tool-title" tabIndex={-1}>Sjekk kontrakten</h1>
-          <p>Gjennomgå kundens kontrakt. Legg til tilbudet hvis du vil sammenligne vilkårene.</p>
-        </div>
-      </div>
-
-      <div className="wrap tool-body">
-        <form onSubmit={analyze}>
-          <fieldset disabled={loading}>
-            <div className="columns documents">
-              <DocumentField
-                id="contract"
-                label="Kundens kontrakt"
-                value={review.contract}
-                disabled={loading}
-                onChange={review.changeContract}
-                onReadingChange={setContractReading}
-              />
-              <DocumentField
-                id="offer"
-                label="Tilbud (valgfritt)"
-                value={review.offer}
-                disabled={loading}
-                onChange={review.changeOffer}
-                onReadingChange={setOfferReading}
-              />
-            </div>
-            <div className="form-actions">
-              <button className="button" disabled={!canAnalyze}>
-                {loading ? "Analyserer …" : "Analyser"}
-              </button>
-            </div>
-          </fieldset>
-        </form>
-
-        {error && <p className="error" role="alert">{error}</p>}
-
-        {analysis && (
-          <section className="results" aria-labelledby="findings-title">
-            <div className="section-heading">
-              <h2 id="findings-title">Funn</h2>
-              {analysis.mode === "mock" && <span className="mode">Eksempelmodus</span>}
-            </div>
-            {analysis.mode === "mock" && (
-              <p className="note">Funnene er et fast eksempel og er ikke basert på dokumentene du la inn.</p>
+    <AssistantRuntimeProvider runtime={runtime}>
+      <ChatEntries.Provider value={entries}>
+        <ThreadPrimitive.Root className={entries.length ? "chat-workspace" : "chat-workspace chat-workspace-empty"} onDragOver={(event) => {
+          if (event.dataTransfer.types.includes("Files")) event.preventDefault();
+        }} onDrop={dropFiles}>
+          <header className="chat-header">
+            <h1 tabIndex={-1}>Kontraktschat</h1>
+            {(chat.entries.length > 0 || chat.attachments.length > 0) && (
+              <button type="button" className="button-quiet" disabled={busy} onClick={() => {
+                chat.reset();
+                setMessage("");
+                setPastedText("");
+                setPasting(false);
+                setFileError("");
+                inputRef.current?.focus();
+              }}>Ny samtale</button>
             )}
-            {findings.length === 0 && <p className="note">Ingen funn å vise</p>}
-            {findings.map((finding) => (
-              <FindingCard
-                key={finding.id}
-                finding={finding}
-                selected={selected.includes(finding.id)}
-                onToggle={(checked) => {
-                  review.toggleFinding(finding.id, checked);
-                  setCopyState("idle");
-                }}
-              />
-            ))}
-
-            {findings.some(isSelectable) && reply === null && (
-              <p className="note">Velg minst ett punkt for å lage et svar til kunden.</p>
-            )}
-
-            <ContractChat
-              turns={review.turns}
-              message={review.message}
-              sending={review.sending}
-              error={review.chatError}
-              onMessageChange={review.setMessage}
-              onSend={review.sendMessage}
-              onUseDraft={(draft) => {
-                review.setAcceptedDraft(draft);
-                setCopyState("idle");
-              }}
-            />
-
-            {reply !== null && (
-              <div className="reply">
-                <div className="reply-intro">
-                  <label htmlFor="reply">Svar til kunden</label>
-                  <p>{acceptedDraft ? "Du har valgt dette utkastet fra chatten." : "Bare punktene du har valgt er med."}</p>
-                  <button type="button" className="button button-pad" onClick={copyReply}>Kopier svar</button>
-                  <p role="status" className={copyState === "failed" ? "reply-status reply-status-failed" : "reply-status"}>
-                    {copyState === "copied" && "Svaret er kopiert."}
-                    {copyState === "failed" && "Kopieringen virket ikke. Teksten er markert, så du kan kopiere den selv."}
-                  </p>
+          </header>
+          <ThreadPrimitive.Viewport className="chat-viewport">
+            {entries.length === 0 && (
+              <div className="chat-welcome">
+                <h2>Hva trenger du hjelp med?</h2>
+                <p>Spør om en kontrakt, eller legg ved dokumentene dine.</p>
+                <div className="chat-suggestions">
+                  {starterQuestions.map((question) => (
+                    <button key={question} type="button" onClick={() => {
+                      setMessage(question);
+                      inputRef.current?.focus();
+                    }}>{question}</button>
+                  ))}
                 </div>
-                <textarea id="reply" ref={replyRef} readOnly value={reply} />
               </div>
             )}
-          </section>
-        )}
-      </div>
-    </main>
+            <div className="chat-thread" role="log" aria-label="Samtale">
+              <ThreadPrimitive.Messages components={{ UserMessage: ChatMessage, AssistantMessage: ChatMessage }} />
+              {chat.pending && <p className="chat-working" role="status">Jobber med svaret …</p>}
+            </div>
+          </ThreadPrimitive.Viewport>
+          <form className="chat-composer" onSubmit={submit}>
+            {(chat.documents.contract || chat.documents.offer) && <p className="chat-active">
+              {chat.documents.contract && <>Kontrakt: {chat.documents.contract.name} </>}
+              {chat.documents.offer && <>Tilbud: {chat.documents.offer.name}</>}
+            </p>}
+            {chat.attachments.length > 0 && <ul className="chat-files">
+              {chat.attachments.map(({ name }, index) => <li key={index}>
+                {name} <button type="button" aria-label={`Fjern ${name}`} disabled={busy}
+                  onClick={() => chat.setAttachments((files) => files.filter((_, i) => i !== index))}>×</button>
+              </li>)}
+            </ul>}
+            {pasting && <div className="chat-paste">
+              <label htmlFor="document-paste">Lim inn dokumenttekst</label>
+              <textarea id="document-paste" value={pastedText} maxLength={MAX_DOCUMENT_CHARS} disabled={busy}
+                onChange={(event) => setPastedText(event.target.value)} />
+              <button type="button" className="button-quiet" disabled={busy || !pastedText.trim() || chat.attachments.length >= 2}
+                onClick={addPastedText}>Legg ved tekst</button>
+            </div>}
+            <textarea ref={inputRef} aria-label="Melding" placeholder="Spør om kontrakten …" value={message}
+              rows={2} maxLength={MAX_MESSAGE_CHARS} readOnly={busy} onChange={(event) => setMessage(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+                  event.preventDefault();
+                  event.currentTarget.form?.requestSubmit();
+                }
+              }} />
+            <div className="chat-composer-actions">
+              <input ref={uploadRef} type="file" aria-label="PDF-vedlegg" accept="application/pdf,.pdf" multiple hidden
+                onChange={(event) => {
+                  if (event.target.files) void addFiles(event.target.files);
+                  event.target.value = "";
+                }} />
+              <button type="button" className="button-quiet" disabled={busy}
+                onClick={() => uploadRef.current?.click()}>{reading ? "Leser PDF …" : "+ Legg ved PDF"}</button>
+              <button type="button" className="button-quiet" disabled={busy}
+                aria-expanded={pasting} onClick={() => setPasting(!pasting)}>Lim inn dokument</button>
+              <button className="button" disabled={!canSend}>Send</button>
+            </div>
+            {(fileError || chat.error) && <p className="error" role="alert">{fileError || chat.error}</p>}
+          </form>
+        </ThreadPrimitive.Root>
+      </ChatEntries.Provider>
+    </AssistantRuntimeProvider>
   );
 }

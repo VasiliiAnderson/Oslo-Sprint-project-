@@ -12,6 +12,7 @@ from .openai_client import (
     ModelConfigurationError,
     ModelResponseError,
     ModelTimeout,
+    generate_chat_context,
     generate_findings,
     generate_follow_up,
 )
@@ -19,6 +20,9 @@ from .review import follow_up_findings_match, follow_up_sources_match, review_fi
 from .schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
+    ChatContextRequest,
+    ChatContextResponse,
+    DocumentRole,
     FollowUpRequest,
     FollowUpResponse,
 )
@@ -106,3 +110,29 @@ def follow_up(request: FollowUpRequest) -> FollowUpResponse:
     if not follow_up_sources_match(request, result):
         raise HTTPException(502, "Sitatene kunne ikke bekreftes i dokumentene. Prøv igjen.")
     return FollowUpResponse(mode="live", **result.model_dump())
+
+
+def _example_role(name: str, content: str) -> DocumentRole:
+    label = name.casefold()
+    opening = content[:160].casefold()
+    if "tilbud" in label or opening.startswith("tilbud"):
+        return "offer"
+    if "kontrakt" in label or "contract" in label or opening.startswith(("oppdrag", "avtale", "kontrakt")):
+        return "contract"
+    return "unclear"
+
+
+@app.post("/chat-context")
+def chat_context(request: ChatContextRequest) -> ChatContextResponse:
+    if _mode() == "mock":
+        roles = [_example_role(file.name, file.text) for file in request.attachments]
+        answer = "Legg ved kundens kontrakt eller lim inn et relevant utdrag, så ser jeg nærmere på det."
+        if "unclear" in roles:
+            file = request.attachments[roles.index("unclear")]
+            answer = f"Er «{file.name}» kundens kontrakt eller tilbudet dere sendte?"
+        return ChatContextResponse(mode="mock", roles=roles, answer=answer, needs_contract="contract" not in roles)
+
+    result = _run_live("build_chat_context_prompt", request, generate_chat_context)
+    if len(result.roles) != len(request.attachments):
+        raise HTTPException(502, "Kunne ikke identifisere vedleggene. Prøv igjen.")
+    return ChatContextResponse(mode="live", **result.model_dump())
