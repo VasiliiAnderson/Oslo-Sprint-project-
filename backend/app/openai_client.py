@@ -1,10 +1,13 @@
 import os
 from json import JSONDecodeError
+from typing import TypeVar
 
 from openai import APITimeoutError, OpenAI, OpenAIError
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
-from .schemas import CandidateFinding, ModelFindings
+from .schemas import CandidateFinding, FollowUpResult, ModelFindings
+
+ModelResult = TypeVar("ModelResult", bound=BaseModel)
 
 
 class ModelConfigurationError(Exception):
@@ -20,6 +23,16 @@ class ModelResponseError(Exception):
 
 
 def generate_findings(instructions: str, user_input: str) -> list[CandidateFinding]:
+    return _generate_structured(instructions, user_input, ModelFindings).findings
+
+
+def generate_follow_up(instructions: str, user_input: str) -> FollowUpResult:
+    return _generate_structured(instructions, user_input, FollowUpResult)
+
+
+def _generate_structured(
+    instructions: str, user_input: str, text_format: type[ModelResult]
+) -> ModelResult:
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     model = os.getenv("OPENAI_MODEL", "gpt-6.1-sol").strip()
     effort = os.getenv("OPENAI_REASONING_EFFORT", "high").strip()
@@ -33,7 +46,7 @@ def generate_findings(instructions: str, user_input: str) -> list[CandidateFindi
                 instructions=instructions,
                 input=user_input,
                 reasoning={"effort": effort},
-                text_format=ModelFindings,
+                text_format=text_format,
                 store=False,
                 max_output_tokens=8192,
             )
@@ -42,6 +55,7 @@ def generate_findings(instructions: str, user_input: str) -> list[CandidateFindi
     except (OpenAIError, ValidationError, JSONDecodeError):
         raise ModelResponseError from None
 
-    if response.status != "completed" or response.output_parsed is None:
+    parsed = response.output_parsed
+    if response.status != "completed" or parsed is None:
         raise ModelResponseError
-    return response.output_parsed.findings
+    return parsed
