@@ -1,34 +1,22 @@
 import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
+import { ContractChat } from "./ContractChat";
+import { MAX_DOCUMENT_CHARS, type Finding } from "./contractApi";
 import { extractPdfText, PdfReadError } from "./pdfText";
-
-type Finding = {
-  id: string;
-  category: "leveranse" | "betaling" | "ekstraarbeid" | "ansvar";
-  status: "samsvarer" | "avvik" | "må_avklares";
-  explanation: string;
-  offer_quote: string | null;
-  contract_quote: string | null;
-  suggested_change: string | null;
-};
-
-type Analysis = { mode: "mock" | "live"; findings: Finding[] };
+import { isSelectable, useContractReview } from "./useContractReview";
 
 type CopyState = "idle" | "copied" | "failed";
-
-const MAX_CHARS = 20_000;
-const MAX_DETAIL_CHARS = 200;
-const ANALYSIS_ERROR = "Analysen kunne ikke gjennomføres. Prøv igjen.";
-const CONNECTION_ERROR = "Fikk ikke kontakt med tjenesten. Prøv igjen.";
 
 const statusLabels: Record<Finding["status"], string> = {
   samsvarer: "Samsvarer",
   avvik: "Avvik",
+  risiko: "Risiko",
   må_avklares: "Må avklares",
 };
 
 const statusClasses: Record<Finding["status"], string> = {
   samsvarer: "status-samsvarer",
   avvik: "status-avvik",
+  risiko: "status-avvik",
   må_avklares: "status-avklares",
 };
 
@@ -39,41 +27,8 @@ const categoryLabels: Record<Finding["category"], string> = {
   ansvar: "Ansvar",
 };
 
-function isSelectable(finding: Finding) {
-  return finding.status !== "samsvarer" && Boolean(finding.suggested_change);
-}
-
-function isAcceptedLength(text: string) {
-  const length = text.trim().length;
-  return length > 0 && length <= MAX_CHARS;
-}
-
 function formatCount(count: number) {
   return count.toLocaleString("nb-NO");
-}
-
-async function requestAnalysis(offer: string, contract: string): Promise<Analysis> {
-  let response: Response;
-  try {
-    response = await fetch("/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ offer_text: offer, contract_text: contract }),
-    });
-  } catch {
-    throw new Error(CONNECTION_ERROR);
-  }
-
-  const body: unknown = await response.json().catch(() => null);
-  if (!response.ok) {
-    const detail = (body as { detail?: unknown } | null)?.detail;
-    const isShortText = typeof detail === "string" && detail.trim() && detail.length <= MAX_DETAIL_CHARS;
-    throw new Error(isShortText ? detail : ANALYSIS_ERROR);
-  }
-  if (!Array.isArray((body as Analysis | null)?.findings)) {
-    throw new Error(ANALYSIS_ERROR);
-  }
-  return body as Analysis;
 }
 
 type DocumentFieldProps = {
@@ -97,7 +52,7 @@ function DocumentField({ id, label, value, disabled, onChange, onReadingChange }
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const length = value.trim().length;
-  const tooLong = length > MAX_CHARS;
+  const tooLong = length > MAX_DOCUMENT_CHARS;
   const hintId = `${id}-hint`;
 
   async function readFile(file: File) {
@@ -180,7 +135,7 @@ function DocumentField({ id, label, value, disabled, onChange, onReadingChange }
       {fileError && <p className="hint hint-error" role="alert">{fileError}</p>}
       {fileNote && <p className="hint" role="status">{fileNote}</p>}
       <p id={hintId} className={tooLong ? "hint hint-error" : "hint"}>
-        {formatCount(length)} av {formatCount(MAX_CHARS)} tegn
+        {formatCount(length)} av {formatCount(MAX_DOCUMENT_CHARS)} tegn
         {tooLong && ". Kort ned teksten for å analysere."}
       </p>
     </div>
@@ -231,12 +186,8 @@ function FindingCard({ finding, selected, onToggle }: FindingCardProps) {
 }
 
 export function Tool() {
-  const [offer, setOffer] = useState("");
-  const [contract, setContract] = useState("");
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const review = useContractReview();
+  const { analysis, selected, loading, error, reply, acceptedDraft } = review;
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [offerReading, setOfferReading] = useState(false);
   const [contractReading, setContractReading] = useState(false);
@@ -255,51 +206,17 @@ export function Tool() {
     };
   }, []);
 
-  const canAnalyze = isAcceptedLength(offer) && isAcceptedLength(contract) && !offerReading && !contractReading;
+  const canAnalyze = review.canAnalyze && !offerReading && !contractReading;
   const findings = analysis?.findings ?? [];
-  const suggestions = findings.flatMap((finding) =>
-    isSelectable(finding) && selected.includes(finding.id) ? [finding.suggested_change as string] : [],
-  );
-  const reply = ["Hei,", ...suggestions, "Vennlig hilsen"].join("\n\n");
-
-  function clearResults() {
-    setAnalysis(null);
-    setSelected([]);
-    setError("");
-    setCopyState("idle");
-  }
-
-  function changeOffer(value: string) {
-    setOffer(value);
-    clearResults();
-  }
-
-  function changeContract(value: string) {
-    setContract(value);
-    clearResults();
-  }
-
-  function toggleFinding(id: string, checked: boolean) {
-    setSelected((current) => (checked ? [...current, id] : current.filter((item) => item !== id)));
-    setCopyState("idle");
-  }
-
-  async function analyze(event: FormEvent<HTMLFormElement>) {
+  function analyze(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canAnalyze || loading) return;
-    setLoading(true);
-    clearResults();
-
-    try {
-      setAnalysis(await requestAnalysis(offer, contract));
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : ANALYSIS_ERROR);
-    } finally {
-      setLoading(false);
-    }
+    if (!canAnalyze) return;
+    setCopyState("idle");
+    void review.analyze();
   }
 
   async function copyReply() {
+    if (reply === null) return;
     try {
       await navigator.clipboard.writeText(reply);
       setCopyState("copied");
@@ -320,27 +237,27 @@ export function Tool() {
       <div className="wrap">
         <div className="tool-intro">
           <h1 className="tool-title" tabIndex={-1}>Sjekk kontrakten</h1>
-          <p>Sammenlign kundens kontrakt med tilbudet du sendte.</p>
+          <p>Gjennomgå kundens kontrakt. Legg til tilbudet hvis du vil sammenligne vilkårene.</p>
         </div>
 
         <form onSubmit={analyze}>
           <fieldset disabled={loading}>
             <div className="columns documents">
               <DocumentField
-                id="offer"
-                label="Tilbud"
-                value={offer}
-                disabled={loading}
-                onChange={changeOffer}
-                onReadingChange={setOfferReading}
-              />
-              <DocumentField
                 id="contract"
                 label="Kundens kontrakt"
-                value={contract}
+                value={review.contract}
                 disabled={loading}
-                onChange={changeContract}
+                onChange={review.changeContract}
                 onReadingChange={setContractReading}
+              />
+              <DocumentField
+                id="offer"
+                label="Tilbud (valgfritt)"
+                value={review.offer}
+                disabled={loading}
+                onChange={review.changeOffer}
+                onReadingChange={setOfferReading}
               />
             </div>
             <div className="form-actions">
@@ -368,19 +285,35 @@ export function Tool() {
                 key={finding.id}
                 finding={finding}
                 selected={selected.includes(finding.id)}
-                onToggle={(checked) => toggleFinding(finding.id, checked)}
+                onToggle={(checked) => {
+                  review.toggleFinding(finding.id, checked);
+                  setCopyState("idle");
+                }}
               />
             ))}
 
-            {findings.some(isSelectable) && suggestions.length === 0 && (
+            {findings.some(isSelectable) && reply === null && (
               <p className="note">Velg minst ett punkt for å lage et svar til kunden.</p>
             )}
 
-            {suggestions.length > 0 && (
+            <ContractChat
+              turns={review.turns}
+              message={review.message}
+              sending={review.sending}
+              error={review.chatError}
+              onMessageChange={review.setMessage}
+              onSend={review.sendMessage}
+              onUseDraft={(draft) => {
+                review.setAcceptedDraft(draft);
+                setCopyState("idle");
+              }}
+            />
+
+            {reply !== null && (
               <div className="reply">
                 <div className="reply-intro">
                   <label htmlFor="reply">Svar til kunden</label>
-                  <p>Bare punktene du har valgt er med.</p>
+                  <p>{acceptedDraft ? "Du har valgt dette utkastet fra chatten." : "Bare punktene du har valgt er med."}</p>
                   <button type="button" className="button button-pad" onClick={copyReply}>Kopier svar</button>
                   <p role="status" className={copyState === "failed" ? "reply-status reply-status-failed" : "reply-status"}>
                     {copyState === "copied" && "Svaret er kopiert."}

@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: { "/analyze": "http://127.0.0.1:8000" },
+    proxy: {
+      "/analyze": "http://127.0.0.1:8000",
+      "/follow-up": "http://127.0.0.1:8000",
+    },
   },
 });
