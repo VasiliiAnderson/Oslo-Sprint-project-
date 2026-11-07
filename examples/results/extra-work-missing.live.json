@@ -4,47 +4,11 @@
     {
       "category": "ekstraarbeid",
       "status": "må_avklares",
-      "explanation": "Tilbudet angir timebetaling etter skriftlig avtale for arbeid utover avtalt omfang. Dette er ikke nevnt i den innlimte kontraktsteksten, slik at grunnlaget for å avtale og fakturere ekstraarbeid bør avklares.",
+      "explanation": "Tilbudet angir at arbeid utover avtalt omfang faktureres med 1 100 kr per time etter skriftlig avtale. Dette er ikke nevnt i den innlimte kontraktsteksten, noe som kan skape uklarhet om betaling for ekstraarbeid.",
       "offer_quote": "Arbeid utover avtalt omfang faktureres med 1 100 kr per time etter skriftlig avtale.",
       "contract_quote": null,
-      "suggested_change": "Kan vi ta inn at arbeid utover avtalt omfang faktureres med 1 100 kr per time etter skriftlig avtale?",
+      "suggested_change": "Kan dere ta inn i kontrakten at arbeid utover avtalt omfang faktureres med 1 100 kr per time etter skriftlig avtale?",
       "id": "f1"
-    },
-    {
-      "category": "betaling",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene angir en fastpris på 18 000 kr eks. mva.",
-      "offer_quote": "Fast pris 18 000 kr eks. mva.",
-      "contract_quote": "Fast pris: 18 000 kr eks. mva.",
-      "suggested_change": null,
-      "id": "f2"
-    },
-    {
-      "category": "betaling",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene angir betaling innen 14 dager etter faktura, med samme utgangspunkt for fristen.",
-      "offer_quote": "Betaling innen 14 dager etter faktura.",
-      "contract_quote": "Betaling innen 14 dager etter faktura.",
-      "suggested_change": null,
-      "id": "f3"
-    },
-    {
-      "category": "leveranse",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene avgrenser oppdraget til fotografering av 30 produkter til nettbutikk.",
-      "offer_quote": "Fotografering av 30 produkter til nettbutikk.",
-      "contract_quote": "Leverandøren skal fotografere 30 produkter til kundens nettbutikk.",
-      "suggested_change": null,
-      "id": "f4"
-    },
-    {
-      "category": "leveranse",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene krever levering innen 10 virkedager etter fotodag.",
-      "offer_quote": "Bildene leveres innen 10 virkedager etter fotodag.",
-      "contract_quote": "Bildene leveres innen 10 virkedager etter fotodag.",
-      "suggested_change": null,
-      "id": "f5"
     }
   ]
 }
