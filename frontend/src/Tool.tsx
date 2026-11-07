@@ -9,9 +9,9 @@ import { useContractChat, type ChatEntry } from "./useContractChat";
 import "./chat.css";
 
 const starterQuestions = [
-  "Gjennomgå en kontrakt",
-  "Sammenlign med tilbudet",
-  "Hjelp meg å svare kunden",
+  { label: "Gjennomgå en kontrakt", message: "Jeg vil gjennomgå en kundekontrakt." },
+  { label: "Sammenlign med tilbudet", message: "Jeg vil sammenligne kundens kontrakt med tilbudet mitt." },
+  { label: "Hjelp meg å svare kunden", message: "Hjelp meg å skrive et svar til kunden om kontrakten." },
 ];
 
 const statusLabels = {
@@ -98,7 +98,7 @@ export function Tool() {
   const runtime = useExternalStoreRuntime({
     messages: entries, convertMessage, isRunning: Boolean(chat.pending),
     onNew: async (entry) => {
-      await chat.send(entry.content.flatMap((part) => part.type === "text" ? [part.text] : []).join("\n"));
+      await sendMessage(entry.content.flatMap((part) => part.type === "text" ? [part.text] : []).join("\n"));
     },
   });
 
@@ -140,9 +140,15 @@ export function Tool() {
     void addFiles(event.dataTransfer.files);
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  async function sendMessage(text: string) {
+    if (busy || (!text.trim() && !chat.attachments.length)) return;
+    setMessage(text);
+    if (await chat.send(text)) setMessage("");
+  }
+
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (canSend && await chat.send(message)) setMessage("");
+    void sendMessage(message);
   }
 
   return (
@@ -170,18 +176,20 @@ export function Tool() {
                 <h2>Hva trenger du hjelp med?</h2>
                 <p>Spør om en kontrakt, eller legg ved dokumentene dine.</p>
                 <div className="chat-suggestions">
-                  {starterQuestions.map((question) => (
-                    <button key={question} type="button" onClick={() => {
-                      setMessage(question);
+                  {starterQuestions.map(({ label, message }) => (
+                    <button key={label} type="button" disabled={busy} onClick={() => {
                       inputRef.current?.focus();
-                    }}>{question}</button>
+                      void sendMessage(message);
+                    }}>{label}</button>
                   ))}
                 </div>
               </div>
             )}
             <div className="chat-thread" role="log" aria-label="Samtale">
               <ThreadPrimitive.Messages components={{ UserMessage: ChatMessage, AssistantMessage: ChatMessage }} />
-              {chat.pending && <p className="chat-working" role="status">Jobber med svaret …</p>}
+              {(reading || chat.pending) && <p className="chat-working" role="status">
+                {reading ? "Leser vedlegg …" : "Jobber med svaret …"}
+              </p>}
             </div>
           </ThreadPrimitive.Viewport>
           <form className="chat-composer" onSubmit={submit}>
