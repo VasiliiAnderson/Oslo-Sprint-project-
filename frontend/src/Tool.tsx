@@ -142,8 +142,8 @@ export function Tool() {
 
   async function sendMessage(text: string) {
     if (busy || (!text.trim() && !chat.attachments.length)) return;
-    setMessage(text);
-    if (await chat.send(text)) setMessage("");
+    setMessage("");
+    if (!(await chat.send(text))) setMessage(text);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
