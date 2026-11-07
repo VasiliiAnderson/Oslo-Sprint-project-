@@ -49,7 +49,9 @@ Ikke lag funn om temaer ingen av dokumentene omtaler, siden de ikke kan belegges
 # Prioritering
 
 Returner høyst seks funn, med det viktigste for leverandøren først. Samle duplikater til ett funn per vilkår. \
-Prioriter `avvik` og `må_avklares`. Ta bare med `samsvarer` for sentrale vilkår og når det er plass. \
+Prioriter `avvik` og `må_avklares`. Ta bare med `samsvarer` når vilkåret er vesentlig og ordlyden er så ulik \
+at leverandøren kan lure på om det betyr det samme, og høyst to slike funn. \
+Ikke rapporter vilkår med lik eller nesten lik ordlyd. \
 Når tekstgrunnlaget er for svakt, bruk `må_avklares` med relevant sitat eller utelat funnet. \
 En tom liste er bedre enn funn du ikke kan belegge.
 
