@@ -1,114 +1,65 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
+import "@fontsource-variable/schibsted-grotesk/wght.css";
+import "@fontsource/ibm-plex-serif/latin-400.css";
 import "./style.css";
+import { Landing } from "./Landing";
+import { Tool } from "./Tool";
 
-type Finding = {
-  id: string;
-  category: "leveranse" | "betaling" | "ekstraarbeid" | "ansvar";
-  status: "samsvarer" | "avvik" | "må_avklares";
-  explanation: string;
-  offer_quote: string | null;
-  contract_quote: string | null;
-  suggested_change: string | null;
+type View = "landing" | "tool";
+
+const TOOL_HASH = "#/sjekk";
+
+const titles: Record<View, string> = {
+  landing: "Kontraktsstøtte",
+  tool: "Sjekk kontrakten – Kontraktsstøtte",
 };
 
-type Analysis = { mode: "mock" | "live"; findings: Finding[] };
-
-const statusLabels: Record<Finding["status"], string> = {
-  samsvarer: "Samsvarer",
-  avvik: "Avvik",
-  må_avklares: "Må avklares",
-};
+function currentView(): View {
+  return window.location.hash === TOOL_HASH ? "tool" : "landing";
+}
 
 function App() {
-  const [offer, setOffer] = useState("");
-  const [contract, setContract] = useState("");
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [view, setView] = useState<View>(currentView);
+  const isFirstRender = useRef(true);
 
-  async function analyze(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setError("");
-    setAnalysis(null);
-    setSelected([]);
-
-    try {
-      const response = await fetch("/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offer_text: offer, contract_text: contract }),
-      });
-      if (!response.ok) {
-        const detail: unknown = (await response.json().catch(() => null))?.detail;
-        throw new Error(typeof detail === "string" ? detail : "Analysen kunne ikke gjennomføres.");
-      }
-      setAnalysis(await response.json());
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Noe gikk galt.");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    function handleHashChange() {
+      const next = currentView();
+      if (next === view) return;
+      const update = () => flushSync(() => setView(next));
+      if (document.startViewTransition) document.startViewTransition(update);
+      else update();
     }
-  }
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [view]);
 
-  const suggestions = (analysis?.findings ?? []).flatMap((finding) =>
-    selected.includes(finding.id) && finding.suggested_change ? [finding.suggested_change] : [],
-  );
+  useEffect(() => {
+    document.title = titles[view];
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+    document.querySelector<HTMLElement>(`[data-view="${view}"] h1`)?.focus();
+  }, [view]);
 
+  // Both views stay mounted so pasted text and findings survive moving between them.
   return (
-    <main>
-      <h1>Kontraktsstøtte</h1>
-      <p>Sammenlign kundens kontrakt med tilbudet du sendte.</p>
-      <form onSubmit={analyze}>
-        <fieldset disabled={loading}>
-          <label htmlFor="offer">Tilbud</label>
-          <textarea id="offer" required value={offer} onChange={(event) => setOffer(event.target.value)} />
-          <label htmlFor="contract">Kontrakt</label>
-          <textarea id="contract" required value={contract} onChange={(event) => setContract(event.target.value)} />
-          <button disabled={!offer.trim() || !contract.trim()}>
-            {loading ? "Analyserer …" : "Analyser"}
-          </button>
-        </fieldset>
-      </form>
-      {error && <p role="alert">{error}</p>}
-      {analysis && (
-        <section aria-label="Resultater">
-          <h2>Funn</h2>
-          {analysis.mode === "mock" && <p>Eksempelmodus. Funnene viser et fiktivt dokumentpar.</p>}
-          {analysis.findings.length === 0 && <p>Ingen funn å vise.</p>}
-          {analysis.findings.map((finding) => (
-            <article key={finding.id}>
-              <h3>{statusLabels[finding.status]} · {finding.category}</h3>
-              <p>{finding.explanation}</p>
-              {finding.offer_quote && <p><strong>Tilbud:</strong> {finding.offer_quote}</p>}
-              {finding.contract_quote && <p><strong>Kontrakt:</strong> {finding.contract_quote}</p>}
-              {finding.suggested_change && (
-                <label className="choice">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(finding.id)}
-                    onChange={(event) => setSelected((current) =>
-                      event.target.checked
-                        ? [...current, finding.id]
-                        : current.filter((id) => id !== finding.id),
-                    )}
-                  />
-                  {finding.suggested_change}
-                </label>
-              )}
-            </article>
-          ))}
-          {suggestions.length > 0 && (
-            <>
-              <label htmlFor="draft">Svarutkast til kunden</label>
-              <textarea id="draft" readOnly value={["Hei,", ...suggestions, "Vennlig hilsen"].join("\n\n")} />
-            </>
-          )}
-        </section>
-      )}
-    </main>
+    <>
+      <div data-view="landing" hidden={view !== "landing"}>
+        <Landing toolHref={TOOL_HASH} />
+      </div>
+      <div data-view="tool" hidden={view !== "tool"}>
+        <Tool />
+      </div>
+      <footer className="site-footer wrap">
+        Prototype fra Oslo Sprint. Bruk fiktive dokumenter. Verktøyet gir ikke juridisk rådgivning, så les alltid hele
+        kontrakten selv.
+      </footer>
+    </>
   );
 }
 
