@@ -47,6 +47,9 @@ def check_finding(finding: dict, offer: str, contract: str) -> list[str]:
             problems.append("avvik mangler sitat fra begge dokumenter")
         if not suggestion:
             problems.append("avvik mangler endringsforslag")
+    elif status == "risiko":
+        if not contract_quote:
+            problems.append("risiko mangler kontraktsitat")
     elif status == "må_avklares":
         if not (offer_quote or contract_quote):
             problems.append("må_avklares mangler sitat")
@@ -60,9 +63,9 @@ def check_finding(finding: dict, offer: str, contract: str) -> list[str]:
     return problems
 
 
-def post(api: str, payload: dict) -> tuple[int, dict]:
+def post(api: str, payload: dict, endpoint: str = "/analyze") -> tuple[int, dict]:
     request = urllib.request.Request(
-        f"{api.rstrip('/')}/analyze",
+        f"{api.rstrip('/')}{endpoint}",
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",

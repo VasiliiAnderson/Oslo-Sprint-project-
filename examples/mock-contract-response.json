@@ -1,0 +1,14 @@
+{
+  "mode": "mock",
+  "findings": [
+    {
+      "id": "f1",
+      "category": "ekstraarbeid",
+      "status": "risiko",
+      "explanation": "Kontrakten setter ingen grense for antall revisjoner, og kunden avgjør når resultatet er godt nok. Leverandøren kan dermed måtte gjøre ubegrenset revisjonsarbeid til fast pris.",
+      "offer_quote": null,
+      "contract_quote": "Kunden kan be om revisjoner inntil kunden er fornøyd med resultatet, uten ekstra kostnad.",
+      "suggested_change": "Kan vi avtale et fast antall revisjonsrunder som er inkludert i prisen, og at ytterligere revisjoner avtales særskilt?"
+    }
+  ]
+}
