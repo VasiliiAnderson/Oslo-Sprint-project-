@@ -1,0 +1,23 @@
+{
+  "mode": "live",
+  "findings": [
+    {
+      "category": "betaling",
+      "status": "avvik",
+      "explanation": "Kontrakten forlenger betalingsfristen fra 14 til 60 dager etter faktura. Leverandøren må dermed vente 46 dager lenger på betaling.",
+      "offer_quote": "Betaling innen 14 dager etter faktura.",
+      "contract_quote": "Betaling innen 60 dager etter faktura.",
+      "suggested_change": "Kan betalingsfristen settes til 14 dager etter faktura, i tråd med tilbudet?",
+      "id": "f1"
+    },
+    {
+      "category": "leveranse",
+      "status": "samsvarer",
+      "explanation": "Begge dokumentene omfatter design av én landingsside med to revisjonsrunder. Leveranseomfanget er dermed uendret.",
+      "offer_quote": "Design av én landingsside med to revisjonsrunder.",
+      "contract_quote": "Design av én landingsside med to revisjonsrunder.",
+      "suggested_change": null,
+      "id": "f2"
+    }
+  ]
+}

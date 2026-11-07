@@ -1,0 +1,41 @@
+{
+  "mode": "live",
+  "findings": [
+    {
+      "category": "ekstraarbeid",
+      "status": "avvik",
+      "explanation": "Tilbudet inkluderer to revisjonsrunder, mens kontrakten åpner for revisjoner uten fast grense til kunden er fornøyd. Dette kan øke arbeidsomfanget uten økt betaling.",
+      "offer_quote": "To revisjonsrunder er inkludert.",
+      "contract_quote": "Kunden kan be om revisjoner inntil kunden er fornøyd med resultatet, uten ekstra kostnad.",
+      "suggested_change": "Kan vi begrense inkluderte revisjoner til to runder og avtale særskilt betaling for ytterligere runder?",
+      "id": "f1"
+    },
+    {
+      "category": "betaling",
+      "status": "samsvarer",
+      "explanation": "Begge dokumentene angir en pris på 24 000 kr eks. mva.",
+      "offer_quote": "Prisen er 24 000 kr eks. mva.",
+      "contract_quote": "Vederlaget er 24 000 kr eks. mva.",
+      "suggested_change": null,
+      "id": "f2"
+    },
+    {
+      "category": "betaling",
+      "status": "samsvarer",
+      "explanation": "Begge dokumentene angir betaling innen 14 dager etter faktura.",
+      "offer_quote": "Betaling innen 14 dager etter faktura.",
+      "contract_quote": "Betaling innen 14 dager etter faktura.",
+      "suggested_change": null,
+      "id": "f3"
+    },
+    {
+      "category": "leveranse",
+      "status": "samsvarer",
+      "explanation": "Begge dokumentene beskriver leveransen som logo og visuell profil for kafeen.",
+      "offer_quote": "Tilbud: Logo og visuell profil for kafé.",
+      "contract_quote": "Oppdrag: Leverandøren skal levere logo og visuell profil for kafeen.",
+      "suggested_change": null,
+      "id": "f4"
+    }
+  ]
+}
