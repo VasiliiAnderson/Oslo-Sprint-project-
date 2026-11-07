@@ -1,0 +1,14 @@
+{
+  "mode": "mock",
+  "findings": [
+    {
+      "id": "payment-1",
+      "category": "betaling",
+      "status": "avvik",
+      "explanation": "Kontrakten gir kunden 46 dager lengre betalingsfrist enn tilbudet.",
+      "offer_quote": "Betaling innen 14 dager etter faktura.",
+      "contract_quote": "Betaling innen 60 dager etter faktura.",
+      "suggested_change": "Kan vi endre betalingsfristen til 14 dager etter faktura, slik den står i tilbudet?"
+    }
+  ]
+}
