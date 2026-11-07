@@ -27,10 +27,11 @@ leverandørens eksisterende verktøy og kode, og bruk av arbeidet i egen portef�
 Oppsigelse: ensidig rett for kunden, kort frist og manglende betaling for utført eller avtalt arbeid.
 - `ekstraarbeid`: revisjonsrunder, endringer og utvidelser av oppdraget uten ekstra betaling.
 - `ansvar`: ansvarstak, erstatning og skadesløsholdelse, med unntak og kryssreferanser. \
-Taushetsplikt: omfang, varighet og unntak. Eksklusivitet og konkurranseforbud. Lovvalg og tvisteløsning.
+Eksklusivitet og konkurranseforbud.
 
 Et vilkår kan være vesentlig selv om bare kontrakten omtaler det. \
-For eksempel kan en ansvarsbestemmelse uten tak være et funn selv om tilbudet ikke nevner ansvar.
+For eksempel kan en ansvarsbestemmelse uten tak være et funn selv om tilbudet ikke nevner ansvar. \
+Bestemmelser om taushetsplikt, lovvalg og tvisteløsning som bare står i kontrakten er vanlige og skal ikke rapporteres.
 
 # Status
 
