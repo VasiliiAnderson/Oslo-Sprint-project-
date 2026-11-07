@@ -1,0 +1,80 @@
+{
+  "pair_id": "en-brand-03",
+  "language": "en",
+  "base_case": "en-brand",
+  "is_clean": false,
+  "mutations": [
+    "extra_rate"
+  ],
+  "offer_fields": {
+    "client_name": "Brightwater Outdoor Ltd",
+    "client_org": "UK 10482231",
+    "supplier_name": "Northlight Studio AS",
+    "supplier_org": "924 118 506",
+    "price_nok_ex_vat": 92000,
+    "payment_days": 14,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 1200,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-01-22",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 10
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Brightwater Outdoor Ltd",
+    "client_org": "UK 10482231",
+    "supplier_name": "Northlight Studio AS",
+    "supplier_org": "924 118 506",
+    "price_nok_ex_vat": 92000,
+    "payment_days": 14,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-01-22",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 10
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "expected_findings": [
+    {
+      "mutation": "extra_rate",
+      "field": "extra_work",
+      "kind": "differs",
+      "severity": "medium",
+      "offer_value": {
+        "billed_hourly": true,
+        "rate_nok": 1200,
+        "requires_written_approval": true
+      },
+      "contract_value": {
+        "billed_hourly": true,
+        "rate_nok": 850,
+        "requires_written_approval": true
+      },
+      "offer_quote": "Additional work is agreed in writing in advance and invoiced on a time basis at NOK 1 200 per hour excl. VAT.",
+      "contract_quote": "Work not covered by clause 2 is only carried out under a written agreement and invoiced on a time basis at NOK 850 per hour excl. VAT.",
+      "explanation": "The hourly rate for additional work is NOK 850 in the contract, compared with NOK 1200 in the quote."
+    }
+  ],
+  "split": "dev",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}

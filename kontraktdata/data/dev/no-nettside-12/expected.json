@@ -1,0 +1,92 @@
+{
+  "pair_id": "no-nettside-12",
+  "language": "no",
+  "base_case": "no-nettside",
+  "is_clean": false,
+  "mutations": [
+    "party_entity",
+    "extra_rate"
+  ],
+  "offer_fields": {
+    "client_name": "Tindvik Sykkel AS",
+    "client_org": "915 220 674",
+    "supplier_name": "Studio Bølge Kari Nilsen",
+    "supplier_org": "923 456 781",
+    "price_nok_ex_vat": 64000,
+    "payment_days": 20,
+    "revision_rounds": 3,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 950,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2026-11-30",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 7
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Tindvik Gruppen AS",
+    "client_org": "912 008 345",
+    "supplier_name": "Studio Bølge Kari Nilsen",
+    "supplier_org": "923 456 781",
+    "price_nok_ex_vat": 64000,
+    "payment_days": 20,
+    "revision_rounds": 3,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 650,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2026-11-30",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 7
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "expected_findings": [
+    {
+      "mutation": "party_entity",
+      "field": "client_party",
+      "kind": "differs",
+      "severity": "medium",
+      "offer_value": null,
+      "contract_value": null,
+      "offer_quote": "Tindvik Sykkel AS (org.nr. 915 220 674)",
+      "contract_quote": "Oppdragsgiver: Tindvik Gruppen AS, org.nr. 912 008 345",
+      "explanation": "Kontrakten er med Tindvik Gruppen AS, ikke Tindvik Sykkel AS som tilbudet gjaldt. Sjekk hvem du faktisk kan kreve betaling fra."
+    },
+    {
+      "mutation": "extra_rate",
+      "field": "extra_work",
+      "kind": "differs",
+      "severity": "medium",
+      "offer_value": {
+        "billed_hourly": true,
+        "rate_nok": 950,
+        "requires_written_approval": true
+      },
+      "contract_value": {
+        "billed_hourly": true,
+        "rate_nok": 650,
+        "requires_written_approval": true
+      },
+      "offer_quote": "Tilleggsarbeid avtales skriftlig på forhånd og faktureres etter medgått tid à kr 950 per time eks. mva.",
+      "contract_quote": "Endringer eller tillegg til oppdraget skal avtales skriftlig før arbeidet starter, og faktureres med kr 650 per time eks. mva.",
+      "explanation": "Timeprisen for tilleggsarbeid er kr 650 i kontrakten, mot kr 950 i tilbudet."
+    }
+  ],
+  "split": "dev",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}

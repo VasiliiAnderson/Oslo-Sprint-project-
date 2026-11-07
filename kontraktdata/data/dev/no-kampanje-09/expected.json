@@ -1,0 +1,72 @@
+{
+  "pair_id": "no-kampanje-09",
+  "language": "no",
+  "base_case": "no-kampanje",
+  "is_clean": false,
+  "mutations": [
+    "payment_days"
+  ],
+  "offer_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 30,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 45,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "expected_findings": [
+    {
+      "mutation": "payment_days",
+      "field": "payment_days",
+      "kind": "differs",
+      "severity": "high",
+      "offer_value": 30,
+      "contract_value": 45,
+      "offer_quote": "Fakturering skjer ved levering. Faktura forfaller til betaling 30 dager etter fakturadato.",
+      "contract_quote": "Leverandøren fakturerer ved levering. Faktura betales innen 45 dager fra fakturadato.",
+      "explanation": "Kontrakten gir kunden 45 dagers betalingsfrist, mot 30 dager i tilbudet. Du får pengene senere enn avtalt."
+    }
+  ],
+  "split": "dev",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}
