@@ -1,0 +1,72 @@
+{
+  "pair_id": "no-kampanje-04",
+  "language": "no",
+  "base_case": "no-kampanje",
+  "is_clean": false,
+  "mutations": [
+    "liability_uncapped"
+  ],
+  "offer_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 30,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 30,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "uncapped"
+  },
+  "expected_findings": [
+    {
+      "mutation": "liability_uncapped",
+      "field": "liability",
+      "kind": "differs",
+      "severity": "review",
+      "offer_value": "capped_at_fee",
+      "contract_value": "uncapped",
+      "offer_quote": "Leverandørens samlede ansvar under oppdraget er begrenset til oppdragets verdi.",
+      "contract_quote": "Leverandøren er ansvarlig for ethvert direkte og indirekte tap Oppdragsgiver måtte lide som følge av leveransen, uten beløpsbegrensning.",
+      "explanation": "Kontrakten gir ubegrenset ansvar, også for indirekte tap. Tilbudet begrenset ansvaret til oppdragets verdi. Bør vurderes nærmere."
+    }
+  ],
+  "split": "test",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}

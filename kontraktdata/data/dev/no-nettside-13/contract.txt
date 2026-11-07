@@ -1,0 +1,48 @@
+OPPDRAGSAVTALE – Design av ny nettside for Tindvik Sykkel
+
+1. Parter
+Oppdragsgiver: Tindvik Sykkel AS, org.nr. 915 220 674
+Leverandør: Studio Bølge Kari Nilsen, org.nr. 923 456 781
+
+2. Oppdraget
+Avtalen gjelder design av ny nettside med fokus på mobilvisning og nettbutikk. Oppdraget omfatter:
+- Designskisser for forside og seks undersider
+- Mobil- og desktopversjon
+- Klikkbar prototype i Figma
+- Komponentbibliotek for utviklere
+Avtalen bygger på tilbud datert 02.09.2026.
+
+3. Pris
+Avtalt vederlag er NOK 64.000 eksklusive merverdiavgift.
+
+4. Revisjoner
+Tre revisjonsrunder er inkludert i vederlaget. Ytterligere revisjoner faktureres som tilleggsarbeid.
+
+5. Tilleggsarbeid
+Mindre endringer og tillegg i omfang som Oppdragsgiver ber om underveis, inngår i det faste vederlaget.
+
+6. Levering
+Endelig leveranse skal skje innen 30.11.2026.
+
+7. Godkjenning
+Leveransen regnes som godkjent 7 dager etter levering, med mindre Oppdragsgiver innen da har reklamert skriftlig.
+
+8. Betaling
+Leverandøren fakturerer ved levering. Oppdragsgiver betaler fakturaen senest 20 dager etter fakturadato.
+
+9. Rettigheter
+Oppdragsgiver får rettighetene til det endelige materialet når hele vederlaget er betalt. Leverandøren beholder rettighetene til skisser og forslag som ikke ble valgt.
+
+10. Ansvar
+Leverandørens ansvar etter denne avtalen kan ikke overstige avtalt vederlag.
+
+11. Taushetsplikt
+Partene skal behandle opplysninger om hverandres virksomhet konfidensielt, også etter at oppdraget er avsluttet.
+
+12. Lovvalg og tvister
+Avtalen er underlagt norsk rett. Tvister skal søkes løst ved forhandlinger, og ellers med Oslo tingrett som verneting.
+
+Sted og dato: Oslo, 14. september 2026
+
+For Oppdragsgiver: ____________________ (Tindvik Sykkel AS)
+For Leverandør: ____________________ (Studio Bølge Kari Nilsen)

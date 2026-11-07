@@ -1,0 +1,72 @@
+{
+  "pair_id": "no-kampanje-10",
+  "language": "no",
+  "base_case": "no-kampanje",
+  "is_clean": false,
+  "mutations": [
+    "revisions_missing"
+  ],
+  "offer_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 30,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Havsalt Restaurantgruppe AS",
+    "client_org": "919 334 852",
+    "supplier_name": "Maren Lund Grafisk",
+    "supplier_org": "926 771 090",
+    "price_nok_ex_vat": 38500,
+    "payment_days": 30,
+    "revision_rounds": null,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 850,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-03-01",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 5
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "expected_findings": [
+    {
+      "mutation": "revisions_missing",
+      "field": "revision_rounds",
+      "kind": "missing",
+      "severity": "medium",
+      "offer_value": 2,
+      "contract_value": null,
+      "offer_quote": "Prisen inkluderer 2 revisjonsrunder. Ytterligere revisjoner faktureres som tilleggsarbeid.",
+      "contract_quote": null,
+      "explanation": "Tilbudet begrenset revisjoner til 2 runder, men kontrakten sier ingenting om antall revisjoner."
+    }
+  ],
+  "split": "dev",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}

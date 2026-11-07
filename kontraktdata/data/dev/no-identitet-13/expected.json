@@ -1,0 +1,84 @@
+{
+  "pair_id": "no-identitet-13",
+  "language": "no",
+  "base_case": "no-identitet",
+  "is_clean": false,
+  "mutations": [
+    "payment_days",
+    "revisions_unlimited"
+  ],
+  "offer_fields": {
+    "client_name": "Nordkaffe AS",
+    "client_org": "997 503 118",
+    "supplier_name": "Fjordlys Design AS",
+    "supplier_org": "998 214 337",
+    "price_nok_ex_vat": 85000,
+    "payment_days": 14,
+    "revision_rounds": 2,
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 1150,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-01-15",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 10
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "contract_fields": {
+    "client_name": "Nordkaffe AS",
+    "client_org": "997 503 118",
+    "supplier_name": "Fjordlys Design AS",
+    "supplier_org": "998 214 337",
+    "price_nok_ex_vat": 85000,
+    "payment_days": 45,
+    "revision_rounds": "unlimited",
+    "extra_work": {
+      "billed_hourly": true,
+      "rate_nok": 1150,
+      "requires_written_approval": true
+    },
+    "delivery_date": "2027-01-15",
+    "acceptance": {
+      "type": "automatic_after_days",
+      "days": 10
+    },
+    "ip_transfer": {
+      "timing": "on_full_payment",
+      "includes_sketches": false
+    },
+    "liability": "capped_at_fee"
+  },
+  "expected_findings": [
+    {
+      "mutation": "payment_days",
+      "field": "payment_days",
+      "kind": "differs",
+      "severity": "high",
+      "offer_value": 14,
+      "contract_value": 45,
+      "offer_quote": "Fakturering skjer ved levering. Betalingsbetingelser: 14 dager netto fra fakturadato.",
+      "contract_quote": "Leverandøren fakturerer ved levering. Oppdragsgiver betaler fakturaen senest 45 dager etter fakturadato.",
+      "explanation": "Kontrakten gir kunden 45 dagers betalingsfrist, mot 14 dager i tilbudet. Du får pengene senere enn avtalt."
+    },
+    {
+      "mutation": "revisions_unlimited",
+      "field": "revision_rounds",
+      "kind": "differs",
+      "severity": "high",
+      "offer_value": 2,
+      "contract_value": "unlimited",
+      "offer_quote": "Prisen inkluderer 2 revisjonsrunder. Ytterligere revisjoner faktureres som tilleggsarbeid.",
+      "contract_quote": "Leverandøren skal gjennomføre revisjoner inntil Oppdragsgiver er tilfreds med resultatet.",
+      "explanation": "Tilbudet begrenset revisjoner til 2 runder, men kontrakten krever revisjoner til kunden er fornøyd, uten øvre grense."
+    }
+  ],
+  "split": "dev",
+  "notes": "Confidentiality and governing-law clauses appear only in the contract. They are neutral and should not be reported as findings."
+}
