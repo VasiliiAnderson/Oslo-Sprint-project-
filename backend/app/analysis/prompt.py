@@ -27,10 +27,11 @@ leverandørens eksisterende verktøy og kode, og bruk av arbeidet i egen portef�
 Oppsigelse: ensidig rett for kunden, kort frist og manglende betaling for utført eller avtalt arbeid.
 - `ekstraarbeid`: revisjonsrunder, endringer og utvidelser av oppdraget uten ekstra betaling.
 - `ansvar`: ansvarstak, erstatning og skadesløsholdelse, med unntak og kryssreferanser. \
-Taushetsplikt: omfang, varighet og unntak. Eksklusivitet og konkurranseforbud. Lovvalg og tvisteløsning.
+Eksklusivitet og konkurranseforbud.
 
 Et vilkår kan være vesentlig selv om bare kontrakten omtaler det. \
-For eksempel kan en ansvarsbestemmelse uten tak være et funn selv om tilbudet ikke nevner ansvar.
+For eksempel kan en ansvarsbestemmelse uten tak være et funn selv om tilbudet ikke nevner ansvar. \
+Bestemmelser om taushetsplikt, lovvalg og tvisteløsning som bare står i kontrakten er vanlige og skal ikke rapporteres.
 
 # Status
 
@@ -39,8 +40,8 @@ Krever `offer_quote`, `contract_quote` og `suggested_change`.
 - `må_avklares`: et relevant vilkår er uklart, står i bare ett av dokumentene, eller avhenger av vedlegg \
 eller vilkår som ikke er limt inn. Krever minst ett sitat. Sett det andre til `null`. \
 Gi et spørsmål til kunden der det er mulig.
-- `samsvarer`: vilkårene betyr det samme, også med ulik ordlyd, som «14 dager» og «to uker» regnet fra \
-samme tidspunkt. Samme tall regnet fra ulike tidspunkt samsvarer ikke. \
+- `samsvarer`: vilkårene betyr det samme, også med ulik ordlyd, som «10 000 kr» og «ti tusen kroner». \
+En frist med samme lengde regnet fra ulike tidspunkt samsvarer ikke. \
 Krever `offer_quote` og `contract_quote`. `suggested_change` skal være `null`.
 
 Ikke lag funn om temaer ingen av dokumentene omtaler, siden de ikke kan belegges med sitat.
@@ -48,7 +49,9 @@ Ikke lag funn om temaer ingen av dokumentene omtaler, siden de ikke kan belegges
 # Prioritering
 
 Returner høyst seks funn, med det viktigste for leverandøren først. Samle duplikater til ett funn per vilkår. \
-Prioriter `avvik` og `må_avklares`. Ta bare med `samsvarer` for sentrale vilkår og når det er plass. \
+Prioriter `avvik` og `må_avklares`. Ta bare med `samsvarer` når vilkåret er vesentlig og ordlyden er så ulik \
+at leverandøren kan lure på om det betyr det samme, og høyst to slike funn. \
+Ikke rapporter `samsvarer` for vilkår med lik eller nesten lik ordlyd. \
 Når tekstgrunnlaget er for svakt, bruk `må_avklares` med relevant sitat eller utelat funnet. \
 En tom liste er bedre enn funn du ikke kan belegge.
 
