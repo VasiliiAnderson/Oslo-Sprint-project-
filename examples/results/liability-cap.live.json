@@ -1,0 +1,14 @@
+{
+  "mode": "live",
+  "findings": [
+    {
+      "category": "ansvar",
+      "status": "avvik",
+      "explanation": "Tilbudet begrenser samlet ansvar til 120 000 kr, mens kontrakten begrenser erstatningsansvaret til 1 000 000 kr per skadetilfelle. Dette øker leverandørens eksponering betydelig, og et samlet ansvarstak er ikke nevnt i den innlimte kontraktsteksten.",
+      "offer_quote": "Leverandørens samlede ansvar etter oppdraget er begrenset til 120 000 kr.",
+      "contract_quote": "Leverandørens erstatningsansvar er begrenset til 1 000 000 kr per skadetilfelle.",
+      "suggested_change": "Kan ansvarsbegrensningen endres til et samlet ansvarstak på 120 000 kr for oppdraget, slik tilbudet angir?",
+      "id": "f1"
+    }
+  ]
+}

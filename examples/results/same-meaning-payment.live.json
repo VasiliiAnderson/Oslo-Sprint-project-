@@ -1,41 +1,4 @@
 {
   "mode": "live",
-  "findings": [
-    {
-      "category": "leveranse",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene beskriver en ny nettside for frisørsalongen med fem undersider. Leveranseomfanget samsvarer.",
-      "offer_quote": "Ny nettside for frisørsalong med fem undersider.",
-      "contract_quote": "Leverandøren lager ny nettside for frisørsalongen med fem undersider.",
-      "suggested_change": null,
-      "id": "f1"
-    },
-    {
-      "category": "betaling",
-      "status": "samsvarer",
-      "explanation": "Prisen er 38 000 kr eks. mva. i begge dokumentene.",
-      "offer_quote": "Prisen er 38 000 kr eks. mva.",
-      "contract_quote": "Vederlaget er 38 000 kr eks. mva.",
-      "suggested_change": null,
-      "id": "f2"
-    },
-    {
-      "category": "betaling",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene gir betalingsfrist på 14 dager fra fakturadato. «To uker» innebærer samme frist.",
-      "offer_quote": "Betaling innen 14 dager etter fakturadato.",
-      "contract_quote": "Fakturaen forfaller til betaling to uker etter fakturadato.",
-      "suggested_change": null,
-      "id": "f3"
-    },
-    {
-      "category": "ekstraarbeid",
-      "status": "samsvarer",
-      "explanation": "Begge dokumentene inkluderer to revisjonsrunder i prisen. Kontrakten utvider ikke antallet inkluderte runder.",
-      "offer_quote": "Inntil to revisjonsrunder er inkludert.",
-      "contract_quote": "To revisjonsrunder inngår i prisen.",
-      "suggested_change": null,
-      "id": "f4"
-    }
-  ]
+  "findings": []
 }
