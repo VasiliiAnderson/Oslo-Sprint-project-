@@ -1,5 +1,5 @@
 const steps = [
-  { title: "Lim inn begge tekstene", text: "Tilbudet du sendte og kontrakten du fikk tilbake." },
+  { title: "Legg inn begge dokumentene", text: "Lim inn teksten eller last opp PDF av tilbudet og kontrakten." },
   { title: "Se hva som er endret", text: "Hvert funn viser sitat fra dokumentene, så du kan sjekke det selv." },
   { title: "Send svaret", text: "Velg punktene du vil ta opp, og kopier et svarutkast til kunden." },
 ];
@@ -23,8 +23,8 @@ export function Landing({ toolHref }: { toolHref: string }) {
           <h1 className="hero-title" tabIndex={-1}>Sier kontrakten det samme som tilbudet ditt?</h1>
           <div className="hero-intro">
             <p>
-              Lim inn tilbudet og kundens kontrakt. Du ser hva som er endret, med sitat fra dokumentene, og får et
-              svarutkast du kan sende til kunden.
+              Lim inn eller last opp tilbudet og kundens kontrakt. Du ser hva som er endret, med sitat fra dokumentene,
+              og får et svarutkast du kan sende til kunden.
             </p>
             <a className="button" href={toolHref}>Sjekk kontrakten</a>
           </div>

@@ -1,4 +1,5 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
+import { extractPdfText, PdfReadError } from "./pdfText";
 
 type Finding = {
   id: string;
@@ -79,24 +80,105 @@ type DocumentFieldProps = {
   id: string;
   label: string;
   value: string;
+  disabled: boolean;
   onChange: (value: string) => void;
+  onReadingChange: (reading: boolean) => void;
 };
 
-function DocumentField({ id, label, value, onChange }: DocumentFieldProps) {
+function hasFiles(event: DragEvent) {
+  return event.dataTransfer.types.includes("Files");
+}
+
+function DocumentField({ id, label, value, disabled, onChange, onReadingChange }: DocumentFieldProps) {
+  const [reading, setReading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [fileNote, setFileNote] = useState("");
+  const [fileError, setFileError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const length = value.trim().length;
   const tooLong = length > MAX_CHARS;
   const hintId = `${id}-hint`;
 
+  async function readFile(file: File) {
+    if (reading || disabled) return;
+    setReading(true);
+    onReadingChange(true);
+    setFileNote("");
+    setFileError("");
+    try {
+      const { text, pages } = await extractPdfText(file);
+      onChange(text);
+      const pageLabel = pages === 1 ? "1 side" : `${pages} sider`;
+      setFileNote(`Hentet fra ${file.name} (${pageLabel}). Sjekk at teksten stemmer.`);
+    } catch (error) {
+      setFileError(error instanceof PdfReadError ? error.message : "Kunne ikke lese PDF-filen.");
+    } finally {
+      setReading(false);
+      onReadingChange(false);
+    }
+  }
+
+  function handleDrop(event: DragEvent) {
+    if (!hasFiles(event)) return;
+    event.preventDefault();
+    setDragging(false);
+    const file = event.dataTransfer.files[0];
+    if (file) void readFile(file);
+  }
+
   return (
-    <div className="field">
-      <label htmlFor={id}>{label}</label>
+    <div
+      className={dragging ? "field field-dragging" : "field"}
+      onDragOver={(event) => {
+        if (!hasFiles(event)) return;
+        event.preventDefault();
+        setDragging(!disabled && !reading);
+      }}
+      onDragLeave={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false);
+      }}
+      onDrop={handleDrop}
+    >
+      <div className="field-head">
+        <label htmlFor={id}>{label}</label>
+        <button
+          type="button"
+          className="button-quiet"
+          disabled={reading}
+          aria-label={`Last opp PDF for ${label.toLowerCase()}`}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          {reading ? "Leser PDF …" : "Last opp PDF"}
+        </button>
+        <input
+          ref={fileInputRef}
+          id={`${id}-file`}
+          type="file"
+          accept="application/pdf,.pdf"
+          hidden
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = "";
+            if (file) void readFile(file);
+          }}
+        />
+      </div>
       <textarea
         id={id}
         value={value}
+        readOnly={reading}
+        placeholder="Lim inn teksten, eller slipp en PDF her"
         aria-describedby={hintId}
         aria-invalid={tooLong}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => {
+          setFileNote("");
+          setFileError("");
+          onChange(event.target.value);
+        }}
       />
+      {fileError && <p className="hint hint-error" role="alert">{fileError}</p>}
+      {fileNote && <p className="hint" role="status">{fileNote}</p>}
       <p id={hintId} className={tooLong ? "hint hint-error" : "hint"}>
         {formatCount(length)} av {formatCount(MAX_CHARS)} tegn
         {tooLong && ". Kort ned teksten for å analysere."}
@@ -156,9 +238,24 @@ export function Tool() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copyState, setCopyState] = useState<CopyState>("idle");
+  const [offerReading, setOfferReading] = useState(false);
+  const [contractReading, setContractReading] = useState(false);
   const replyRef = useRef<HTMLTextAreaElement>(null);
 
-  const canAnalyze = isAcceptedLength(offer) && isAcceptedLength(contract);
+  // A file dropped beside the fields would otherwise open in the tab and lose the pasted text.
+  useEffect(() => {
+    function ignoreFileDrop(event: globalThis.DragEvent) {
+      if (event.dataTransfer?.types.includes("Files")) event.preventDefault();
+    }
+    window.addEventListener("dragover", ignoreFileDrop);
+    window.addEventListener("drop", ignoreFileDrop);
+    return () => {
+      window.removeEventListener("dragover", ignoreFileDrop);
+      window.removeEventListener("drop", ignoreFileDrop);
+    };
+  }, []);
+
+  const canAnalyze = isAcceptedLength(offer) && isAcceptedLength(contract) && !offerReading && !contractReading;
   const findings = analysis?.findings ?? [];
   const suggestions = findings.flatMap((finding) =>
     isSelectable(finding) && selected.includes(finding.id) ? [finding.suggested_change as string] : [],
@@ -229,8 +326,22 @@ export function Tool() {
         <form onSubmit={analyze}>
           <fieldset disabled={loading}>
             <div className="columns documents">
-              <DocumentField id="offer" label="Tilbud" value={offer} onChange={changeOffer} />
-              <DocumentField id="contract" label="Kundens kontrakt" value={contract} onChange={changeContract} />
+              <DocumentField
+                id="offer"
+                label="Tilbud"
+                value={offer}
+                disabled={loading}
+                onChange={changeOffer}
+                onReadingChange={setOfferReading}
+              />
+              <DocumentField
+                id="contract"
+                label="Kundens kontrakt"
+                value={contract}
+                disabled={loading}
+                onChange={changeContract}
+                onReadingChange={setContractReading}
+              />
             </div>
             <div className="form-actions">
               <button className="button" disabled={!canAnalyze}>
@@ -249,7 +360,7 @@ export function Tool() {
               {analysis.mode === "mock" && <span className="mode">Eksempelmodus</span>}
             </div>
             {analysis.mode === "mock" && (
-              <p className="note">Funnene er et fast eksempel og er ikke basert på tekstene du limte inn.</p>
+              <p className="note">Funnene er et fast eksempel og er ikke basert på dokumentene du la inn.</p>
             )}
             {findings.length === 0 && <p className="note">Ingen funn å vise</p>}
             {findings.map((finding) => (

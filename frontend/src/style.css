@@ -459,6 +459,48 @@ label {
   background: #fffdf0;
 }
 
+.field-dragging,
+.field-dragging:focus-within {
+  outline: 3px dashed var(--ink);
+  outline-offset: -8px;
+  background: var(--pad);
+}
+
+.field-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.button-quiet {
+  padding: 0.3rem 0.9rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.button-quiet:hover:not(:disabled) {
+  background: var(--pad);
+}
+
+.button-quiet:disabled {
+  border-color: var(--line);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.field textarea::placeholder {
+  color: var(--muted);
+}
+
 .field textarea {
   flex: 1;
   min-height: 17rem;
