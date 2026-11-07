@@ -302,6 +302,70 @@ These thresholds are suggestions to debate, not established standards.
 - **"Is the data safe?"** "Vi lagrer ikke kontrakter. Teksten sendes til modelleverandøren, så før ekte bruk trenger vi databehandleravtale og tydelig informasjon til brukeren."
 - **"How accurate is it?"** Give only numbers we have measured. Today, that's: "Våre fem små testeksempler besto i live-kjøring. Nøyaktighet på større datasett og ekte kontrakter er neste steg."
 
+## 7. Scrutiny of our selling points
+
+We tested our proposed advantages and selling points the way a sceptical juror would. **Most are features or hopes, not proven advantages.** The verdicts below are our own judgment, and the interviews and tests in section 5 should replace them with evidence.
+
+### Advantages
+
+| Claim | The objection | Verdict |
+|---|---|---|
+| Compares against your own offer | Anyone can paste both documents into ChatGPT, and some firms' offers are just a loose email | **Keep:** our clearest focus, but not a lasting advantage |
+| Quotes are checked | This only proves the text exists, and says nothing about what was missed | **Keep, narrowed:** say "you can check the source", not "you can trust the result" |
+| Ends in a reply | A chatbot can write one too, and ours on `main` is the suggestions stitched together | **Keep:** a useful workflow, but easy to copy |
+| The user stays in control | People tend to trust AI output, so control can be more formal than real | **Keep:** a design principle, not a selling point |
+| Looks for meaning, not wording | The evidence is one very short test case | **Drop for now:** run the 47 pairs first |
+| Easy to start | The app only runs locally, can't read scans and stops at 20,000 characters | **Drop:** not true for customers yet |
+| Stores no contracts | Partly because we have no accounts yet, and the text still goes to OpenAI | **Keep, with the caveat:** this may change when we add accounts |
+| Simple, inexpensive technology | Customers don't care, and the cost is an estimate from third-party prices | **Jury only:** measure the cost first |
+
+### Strategy
+
+| Claim | The objection | Verdict |
+|---|---|---|
+| Mismatch in the deal: the customer has lawyers and the freelancer doesn't | No evidence, and many small customers have no lawyers either | **Weak:** a nice story until interviews back it up |
+| Clear moment of need | That moment is also rare and rushed, and people may not think of a tool | **Mixed:** supports pay-per-contract, but makes customers hard to reach |
+| Value far above price | 17,000 kr is fictional, a designer may well notice a price line, and value only comes if the customer agrees to change it | **Weakest claim:** we need real cases |
+| Gap between lawyer and chatbot | Chatbots keep improving, and groups like Grafill offer members free legal help | **Unproven:** the gap may be narrower than we imply |
+| Grow in steps | Each step adds legal risk and cost, and it distracts from one clear problem | **Roadmap only:** not a reason to believe in us today |
+| Partners lower sales costs | They take a share, move slowly, and could build this themselves | **Hypothesis:** we have no partner conversations |
+| An advantage we can build | A checklist can be copied, and an accuracy record only helps if the results are good | **Future only:** neither exists yet |
+
+### Slogans
+
+| Line | Problem | Better |
+|---|---|---|
+| «Finn endringene som koster deg penger» | Implies we find them all | «Få hjelp til å oppdage endringer som kan koste deg penger» |
+| «Uten å vente på en jurist» | Edges towards replacing a lawyer, the risk in section 1.2 | «Få oversikt før du bestemmer om du trenger en jurist» |
+| «Du trenger ikke stole blindt på oss» | True for what's shown, but not for what's missed | «Se hvor hvert funn står i dokumentet» |
+| «Forhandle uten å starte en konflikt» | We have no evidence, and the advice isn't built | Drop it for now |
+| «Lav kostnad, høy verdi» | Ignores sales, support, legal costs and liability | Drop it until we have real numbers |
+| «KI-en foreslår. Mennesket bestemmer.» | Fair, and also a little generic | Keep |
+| «Vi sjekker om kontrakten fortsatt er den avtalen du tilbød» | "Sjekker" sounds complete | «Vi hjelper deg å se om kontrakten fortsatt er den avtalen du tilbød, og å svare» |
+
+### The assumptions everything rests on
+
+1. **Contracts really differ from offers,** often enough and in ways that matter. We have no data on this.
+2. **Small firms dare to push back.** Someone who wants the job may spot the problem and still sign, in which case the value lies in confidence, not detection. "Ikke bare signer. Forhandle." depends on this too.
+3. **We find more than a free assistant does.** We haven't tested it (section 2.2).
+4. **We can reach these customers cheaply.** The need is rare and partners are hypothetical.
+
+Three interview questions would test the first, second and fourth:
+
+- "Tell me about the last time a contract differed from your offer."
+- "What did you do about it?"
+- "What did it cost you, and who did you ask?"
+
+### What survives
+
+> «For små bedrifter som får tilbake en kontrakt: se hva som ser ut til å avvike fra tilbudet, sjekk selv hvor det står, og send et svar du har godkjent. Det er et første steg. Vi tester nå om det finner mer enn en vanlig chatbot, og om folk faktisk tar opp funnene med kunden.»
+
+It's less exciting, but a jury can't easily knock it down, and admitting what we're testing can add credibility.
+
+### What this means for the pitch
+
+The 17,000 kr slide leans on the weakest claim, and the headline depends on assumption 2. Both are memorable, so we suggest keeping them, while being ready to call the first an illustration and the second a hypothesis.
+
 ## Sources
 
 **Legal**
