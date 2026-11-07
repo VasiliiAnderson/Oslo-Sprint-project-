@@ -1,0 +1,9 @@
+{
+  "mode": "mock",
+  "answer": "Her er et utkast som holder fast på de to revisjonsrundene fra tilbudet og spør hva ekstra revisjoner skal koste. Kontrakten sier ikke noe om pris for ekstraarbeid, så utkastet foreslår ingen pris.",
+  "sources": [
+    { "document": "offer", "quote": "To revisjonsrunder er inkludert." },
+    { "document": "contract", "quote": "Kunden kan be om revisjoner inntil kunden er fornøyd med resultatet, uten ekstra kostnad." }
+  ],
+  "draft": "Hei,\n\nTakk for kontrakten. I tilbudet vårt er to revisjonsrunder inkludert i prisen, mens kontrakten åpner for revisjoner til dere er fornøyd. Kan vi endre kontrakten slik at to revisjonsrunder er inkludert, slik det står i tilbudet?\n\nHvis det blir behov for flere runder, hvordan ønsker dere at vi avtaler prisen for det ekstra arbeidet før vi starter?\n\nVennlig hilsen"
+}

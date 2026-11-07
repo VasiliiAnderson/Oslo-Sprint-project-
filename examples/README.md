@@ -14,6 +14,18 @@ Vasilii lager fire utviklingseksempler totalt og ett slutteksempel. Bruk samme J
 
 Slutteksempelet ligger i `final/`. Det skal ikke brukes til å justere prompten.
 
+## Kontrakt først og chat
+
+Neste versjon analyserer kontrakten alene, med tilbudet som valgfritt tillegg, og har en oppfølgingschat. Demoflyten bruker revisjonsparet. Forventningene står i [unlimited-revisions.flow.expected.md](cases/unlimited-revisions.flow.expected.md).
+
+| Mock-svar | Brukes når | Innhold |
+| --- | --- | --- |
+| [mock-contract-response.json](mock-contract-response.json) | `/analyze` med bare kontrakt | `risiko` for ubegrensede revisjoner |
+| [mock-revisions-response.json](mock-revisions-response.json) | `/analyze` med revisjonsparet | `avvik`: to runder mot ubegrenset |
+| [mock-follow-up-response.json](mock-follow-up-response.json) | `/follow-up` | Svar, kilder og utkast som holder fast på to runder og spør om pris uten å foreslå et beløp |
+
+Alle sitatene i mock-svarene finnes ordrett i revisjonsparet. Kjør hele flyten med `python examples/run_flow.py` når backend har `/follow-up`.
+
 ## Kjøring og vurdering
 
 Start backend som beskrevet i [README](../README.md), og kjør fra repoets rot:
