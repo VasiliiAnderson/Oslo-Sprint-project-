@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitch – Kontraktsstøtte</title>
+<style>
+:root{--navy:#0d1b4c;--coral:#ff4d5e;--amber:#ffc21a;--mint:#6fe3b4;--sky:#9cc4ff;--paper:#f4f6fb;--ink:#14182b;--muted:#5d6480;--soft:#d3d8ee;--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--dots:radial-gradient(circle,rgb(255 255 255/.09) 1.5px,transparent 2px) 0 0/20px 20px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--navy);color:var(--ink);font:clamp(1rem,2.1vmin,1.5rem)/1.35 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul{margin:0;padding:0}
+.slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;padding:6vmin max(5vw,1.25rem) 9vmin;overflow:auto}
+.slide.on{display:flex;animation:in .3s ease-out}
+.dark{background:var(--dots),var(--navy);color:#fff}.light{background:var(--paper)}
+.inner{width:100%;max-width:76rem;margin:auto}
+h1{font-size:clamp(3rem,13vmin,9rem);font-weight:700;line-height:1;letter-spacing:-.04em}h1 span{color:var(--coral)}
+h2{max-width:20em;font-size:clamp(2rem,7.2vmin,5rem);font-weight:700;line-height:1.05;letter-spacing:-.035em;text-wrap:balance}
+.sub{max-width:34em;margin-top:1em;font-size:1.3em;line-height:1.28}
+.small{margin-top:1.1em;font-size:.85em;opacity:.75}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4em}
+.doc{padding:1.2em 1.4em;border-radius:1.25rem;background:#fff;font-size:1.25em;font-weight:600;line-height:1.2}.doc small{display:block;margin-bottom:.45em;font-size:.65em;color:var(--muted)}
+.doc mark{padding:0 .2em;border-radius:.2em;background:#ffc2c8;color:inherit}
+.bill{margin-top:1rem;padding:.8em 1.4em;border-radius:1.25rem;background:var(--navy);color:#fff}.bill b{display:block;font-size:2.7em;line-height:1.05;letter-spacing:-.03em;color:var(--coral)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.6em}
+.opt{padding:1.3em;border:1px solid rgb(255 255 255/.25);border-radius:1.25rem;background:rgb(255 255 255/.06)}.opt h3{font-size:1.35em;line-height:1.15;letter-spacing:-.02em}.opt p{margin-top:.5em;color:var(--soft)}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.6em;list-style:none}
+.flow li{padding:1.2em;border-radius:1.25rem;background:var(--c)}.flow b{display:block;font-size:1.3em;line-height:1.12;letter-spacing:-.02em}.flow p{margin-top:.5em}
+.biz{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.6em}.biz div{padding:1.3em;border-radius:1.25rem;background:#fff}.biz h3{font-size:1.3em;letter-spacing:-.02em}.biz ul{margin-top:.5em;padding-left:1.1em}.biz li{margin-top:.3em}
+.ask{margin-top:1em;font-size:1.3em}
+#bar{position:fixed;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem max(5vw,1.25rem);font-size:.8rem;color:#fff;background:rgb(13 27 76/.92)}
+#bar button{padding:.25rem .7rem;border:1px solid #fff;border-radius:99px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+#notes{position:fixed;z-index:4;left:0;right:0;bottom:2.6rem;display:none;max-height:38vh;overflow:auto;padding:1rem max(5vw,1.25rem);background:var(--amber);color:var(--ink);font-size:1.05rem}
+#notes.on{display:block}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.demo-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.6em}
+.demo-open,.demo-copy{padding:.8em 1.5em;border-radius:99px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.demo-open{border:2px solid var(--coral);background:var(--coral);color:var(--ink)}.demo-copy{border:2px solid #fff;background:transparent;color:#fff}
+.stat{margin-top:1em;font-size:1.1em}.stat b{font-size:1.5em;letter-spacing:-.02em;color:#c21f34}.stat-dark b{color:var(--amber)}
+.refs h2{font-size:clamp(1.75rem,5vmin,3rem)}.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1em;font-size:.82em}.ref-grid>div{padding:1.1em 1.3em;border-radius:1.25rem;background:#fff}.ref-grid h3{font-size:1.1em}.ref-grid h3+ul{margin-bottom:.9em}.ref-grid ul{margin-top:.3em;padding-left:1.1em}.ref-grid li{margin-top:.25em}.ref-grid a{color:#123fa8;font-weight:600}
+@media(max-width:44rem){.ref-grid{grid-template-columns:1fr}}
+@keyframes in{from{opacity:0}}
+@media(max-width:44rem){.compare,.three,.flow,.biz{grid-template-columns:1fr}.slide{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.slide.on{animation:none}}
+@media print{body{overflow:visible}.slide{position:relative;display:flex;min-height:100vh;break-after:page}#bar,#notes{display:none!important}}
+</style>
+</head>
+<body>
+<section class="slide dark" data-time="10" data-note="De fleste små bedrifter signerer kundens kontrakt uten advokat. Vi mener de bør gjøre noe annet: ikke bare signere, men forhandle.">
+  <div class="inner"><h1>Ikke bare signer. <span>Forhandle.</span></h1><p class="sub">Kontraktsstøtte for små tjenestebedrifter uten egen jurist.</p></div>
+</section>
+<section class="slide light" data-time="20" data-note="En designer tilbyr en jobb til 85 000 kroner pluss moms. Kontrakten kommer tilbake med samme beløp, men nå inkludert moms. Det er 17 000 kroner mindre. Og vilkår koster: i Sverige ble én av seks fakturaer fra små og mellomstore bedrifter betalt for sent, eller ikke i det hele tatt.">
+  <div class="inner"><h2>Samme beløp. Ett ord endret.</h2>
+    <div class="compare"><p class="doc"><small>Tilbudet ditt</small>85 000 kr eks. mva.</p><p class="doc"><small>Kundens kontrakt</small>85 000 kr <mark>inkl. mva.</mark></p></div>
+    <p class="bill"><b>17 000 kr mindre</b>Med 25 % mva. Og det kan stå i en vanlig kontrakt du bare skulle signere.</p>
+    <p class="stat"><b>1 av 6</b> fakturaer fra svenske små og mellomstore bedrifter ble betalt for sent eller ikke i det hele tatt i 2023.</p>
+    <p class="small">Regneeksempel med fiktivt oppdrag. Kilde: Fortnox, mer enn sju dager etter forfall, uten eksport.</p></div>
+</section>
+<section class="slide dark" data-time="15" data-note="Det startet 38 000 nye enkeltpersonforetak i Norge i 2020, og slike foretak har sjelden egen jurist. I dag kan de signere og håpe, betale en advokat for et lite oppdrag, eller spørre en chatbot uten å vite hva svaret bygger på.">
+  <div class="inner"><h2>I dag har de tre dårlige valg.</h2>
+    <p class="stat stat-dark"><b>38 115</b> nye enkeltpersonforetak i Norge i 2020 (SSB).</p>
+    <div class="three"><div class="opt"><h3>Signere og håpe</h3><p>Raskt, men risikoen oppdages først når det koster.</p></div><div class="opt"><h3>Betale advokat</h3><p>Trygt, men tungt for et lite oppdrag med kort frist.</p></div><div class="opt"><h3>Spørre en chatbot</h3><p>Enkelt, men vanskelig å vite om svaret bygger på kontrakten.</p></div></div></div>
+</section>
+<section class="slide dark" data-time="50" data-note="BYTT TIL APPEN. (1) Lim inn tilbud og kontrakt: «Her er et tilbud på en landingsside, og kontrakten kunden sendte tilbake.» (2) Trykk Analyser: «Den leser dokumentene fra leverandørens side.» (3) Pek på funnet: «Tilbudet sier 14 dager, kontrakten sier 60. Her er sitatene, så du kan sjekke det selv.» (4) Kryss av og trykk Kopier svar: «Nå har du et svar til kunden på sekunder.» REGNE MED VENTETID: snakk videre mens den analyserer. Svikter live, bytt til mock og si at det er eksempelmodus.">
+  <div class="inner"><h2>Live demo</h2><p class="sub">Tilbudet sa 14 dager. Hva sier kontrakten?</p>
+    <div class="demo-actions">
+      <a class="demo-open" href="http://localhost:5173/#/sjekk" target="_blank" rel="noopener">Åpne appen</a>
+      <button type="button" class="demo-copy" data-copy="Tilbud: Design av én landingsside med to revisjonsrunder. Betaling innen 14 dager etter faktura.">Kopier tilbud</button>
+      <button type="button" class="demo-copy" data-copy="Oppdrag: Design av én landingsside med to revisjonsrunder. Betaling innen 60 dager etter faktura.">Kopier kontrakt</button>
+    </div>
+    <p class="small" id="copyStatus" role="status">Fiktive dokumenter</p></div>
+</section>
+<section class="slide light" data-time="15" data-note="Sitatene kontrolleres mot dokumentet, og du bestemmer hva som sendes. Vi vil teste betaling per kontrakt, fordi behovet oppstår når kontrakten ligger på bordet. Neste steg er å teste med ekte konsulenter og små byråer.">
+  <div class="inner"><h2>Betal når kontrakten ligger på bordet.</h2>
+    <div class="biz"><div><h3>Hvorfor stole på det</h3><ul><li>Sitater kontrolleres mot dokumentet</li><li>Ingen lagring av kontrakter hos oss</li><li>Du bestemmer hva som sendes</li><li>Støtte før signering, ikke juridisk rådgivning</li></ul></div><div><h3>Forretningsmodell vi vil teste</h3><ul><li>Betaling per kontrakt, eller abonnement for byråer</li><li>Første kunder: konsulenter og små byråer</li><li>Neste steg: test med 3–5 ekte brukere</li><li>Senere: chat, råd om krav og forhandling</li></ul></div></div></div>
+</section>
+<section class="slide dark" data-time="10" data-note="Små bedrifter trenger et bedre utgangspunkt. Ikke bare signer. Forhandle. Takk.">
+  <div class="inner"><h2>Hver kontrakt er et tilbud om å forhandle.</h2><p class="ask">Vi søker små bedrifter som vil teste det på sin neste kontrakt.</p></div>
+</section>
+<section class="slide light refs" data-time="0" data-note="Ekstra side til spørsmål etter pitchen. Ikke en del av de to minuttene.">
+  <div class="inner"><h2>Kilder og eksempler</h2>
+    <div class="ref-grid">
+      <div><h3>Tall i pitchen</h3><ul>
+        <li><a href="https://www.fortnox.se/fortnox-foretagsguide/driva-foretag/finansiering/uppemot-var-femte-krona-betalas-sent-till-foretagare" target="_blank" rel="noopener">Fortnox</a>: 17 % av fakturaene fra svenske SMB-er betalt for sent eller ikke i 2023.</li>
+        <li><a href="https://www.ssb.no/virksomheter-foretak-og-regnskap/statistikker/etablerere/aar" target="_blank" rel="noopener">SSB</a>: 38 115 nye enkeltpersonforetak i 2020.</li>
+      </ul>
+      <h3>Bakgrunn, ikke kontrollert i original</h3><ul>
+        <li><a href="https://www.ipse.co.uk/policy/ipse-campaign-hub/late-payment/pay-up-how-to-end-late-payment.html" target="_blank" rel="noopener">IPSE</a>: forsinket betaling til britiske frilansere.</li>
+        <li><a href="https://onlabor.org/wp-content/uploads/2017/05/FU_NonpaymentReport_r3.pdf" target="_blank" rel="noopener">Freelancers Union</a>: ubetalt arbeid i USA, 2015.</li>
+        <li><a href="https://cms12.regjeringen.no/globalassets/upload/kud/styrer_raad_utvalg/kunstavdelingen/kunstnerokonomi/norskkritikerlag_.pdf" target="_blank" rel="noopener">Norsk kritikerlag</a>: kritikere uten kontrakt, 2013.</li>
+        <li><a href="https://www.grafill.no/om-grafill/english-2/legal-assistance" target="_blank" rel="noopener">Grafill</a>: juridisk hjelp til medlemmer.</li>
+      </ul></div>
+      <div><h3>Fiktive eksempler</h3><ul>
+        <li><b>Moms:</b> 85 000 kr eks. mot inkl. mva. gir 17 000 kr mindre.</li>
+        <li><b>Betaling:</b> 14 mot 60 dager gir avvik.</li>
+        <li><b>Lik betydning:</b> 14 dager og to uker gir ingen falsk alarm.</li>
+        <li><b>Revisjoner:</b> to runder mot «til kunden er fornøyd» gir avvik.</li>
+        <li><b>Ekstraarbeid:</b> står i tilbudet, mangler i kontrakten, må avklares.</li>
+        <li><b>Ansvar:</b> 120 000 kr samlet mot 1 000 000 kr per skadetilfelle gir avvik.</li>
+      </ul><p class="small">De fem siste er teamets testeksempler, alle bestått i live-kjøring 7. november 2026. Fiktive tekster, ikke bevis på treffsikkerhet i ekte kontrakter.</p></div>
+    </div></div>
+</section>
+<aside id="notes" aria-live="polite"></aside>
+<div id="bar"><span id="count"></span><span><button id="noteBtn" type="button">Manus (N)</button> <button id="prev" type="button">Forrige</button> <button id="next" type="button">Neste</button></span></div>
+<script>
+const slides = [...document.querySelectorAll(".slide")], notes = document.getElementById("notes"), count = document.getElementById("count");
+let i = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1);
+function show(n) {
+  i = Math.min(Math.max(n, 0), slides.length - 1);
+  slides.forEach((s, k) => s.classList.toggle("on", k === i));
+  notes.textContent = slides[i].dataset.note;
+  count.textContent = `${i + 1} / ${slides.length} ${+slides[i].dataset.time ? `· ca. ${slides[i].dataset.time} sek` : "· ekstra"}`;
+  history.replaceState(null, "", `#${i + 1}`);
+}
+document.getElementById("prev").onclick = () => show(i - 1);
+document.getElementById("next").onclick = () => show(i + 1);
+document.getElementById("noteBtn").onclick = () => notes.classList.toggle("on");
+addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(i + 1); }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) show(i - 1);
+  if (e.key.toLowerCase() === "n") notes.classList.toggle("on");
+});
+document.querySelectorAll(".demo-copy").forEach((button) => button.addEventListener("click", async () => {
+  const status = document.getElementById("copyStatus");
+  try {
+    await navigator.clipboard.writeText(button.dataset.copy);
+    status.textContent = button.textContent.replace("Kopier", "Kopierte") + ". Lim det inn i appen.";
+  } catch {
+    status.textContent = "Kopieringen virket ikke. Teksten er: " + button.dataset.copy;
+  }
+}));
+show(i);
+</script>
+</body>
+</html>
