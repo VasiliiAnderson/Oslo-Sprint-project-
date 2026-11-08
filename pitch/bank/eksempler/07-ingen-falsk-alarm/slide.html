@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ulike ord. Samme vilkår. Ingen alarm. – Kontraktsstøtte</title>
+<style>
+:root{--navy:#0d1b4c;--coral:#ff4d5e;--amber:#ffc21a;--mint:#6fe3b4;--sky:#9cc4ff;--paper:#f4f6fb;--ink:#14182b;--muted:#5d6480;--soft:#d3d8ee;--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--dots:radial-gradient(circle,rgb(255 255 255/.09) 1.5px,transparent 2px) 0 0/20px 20px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--navy);color:var(--ink);font:clamp(.95rem,1.9vmin,1.35rem)/1.35 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul{margin:0;padding:0}
+.slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;padding:5vmin max(5vw,1.25rem) 8vmin;overflow:auto}
+.slide.on{display:flex;animation:in .3s ease-out}
+.dark{background:var(--dots),var(--navy);color:#fff}.light{background:var(--paper)}
+.inner{width:100%;max-width:76rem;margin:auto}
+h1{max-width:14em;font-size:clamp(2.5rem,9vmin,6.5rem);font-weight:700;line-height:1;letter-spacing:-.04em;text-wrap:balance}h1 span{color:var(--coral)}
+h2{max-width:22em;font-size:clamp(1.8rem,6vmin,4.2rem);font-weight:700;line-height:1.05;letter-spacing:-.035em;text-wrap:balance}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.8em;font-size:.8em;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.kicker{opacity:.7}
+.chip{padding:.25em .8em;border-radius:99px;letter-spacing:.02em;text-transform:none}
+.chip-live{background:var(--mint);color:var(--ink)}.chip-new{border:1.5px solid var(--amber);color:inherit}
+.light .chip-new{border-color:#b98a00}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2em}
+.doc{padding:1em 1.3em;border-radius:1.25rem;background:#fff;color:var(--ink);font-size:1.05em;font-weight:600;line-height:1.3}
+.doc small{display:block;margin-bottom:.45em;font-size:.72em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.light .doc{box-shadow:0 1px 0 var(--soft)}
+.doc mark{padding:0 .2em;border-radius:.2em;background:#ffc2c8;color:inherit}
+.doc.missing{border:2px dashed #c21f34;background:#fff5f6;color:#8a1a28}
+.doc.same mark{background:#c9f5e3}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.impact{padding:1em 1.3em;border-radius:1.25rem;background:var(--navy);color:#fff}
+.dark .impact{background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22)}
+.impact b{display:block;font-size:2.1em;line-height:1.05;letter-spacing:-.03em;color:var(--coral)}
+.impact.ok b{color:var(--mint)}
+.impact span{display:block;margin-top:.35em;color:var(--soft)}
+.reply{padding:1em 1.3em;border-radius:1.25rem;background:var(--amber);color:var(--ink)}
+.reply small{display:block;margin-bottom:.35em;font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.reply p{font-size:1.1em;font-weight:600;line-height:1.28}
+.backing{display:flex;gap:.8rem;margin-top:1rem;padding:.8em 1.1em;border-left:4px solid var(--sky);border-radius:.4rem;background:rgb(156 196 255/.16)}
+.light .backing{border-color:#123fa8;background:#e6edfb}
+.backing b{white-space:nowrap}
+.src{margin-top:.7em;font-size:.75em;opacity:.75}.src a{color:inherit;font-weight:600}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.8rem;margin-top:1.6em;list-style:none}
+.menu a{display:block;height:100%;padding:1em 1.2em;border:1px solid rgb(255 255 255/.25);border-radius:1.25rem;background:rgb(255 255 255/.06);color:#fff;text-decoration:none}
+.menu a:hover{background:rgb(255 255 255/.12)}.menu b{display:block;font-size:1.15em;letter-spacing:-.01em}.menu span{color:var(--soft);font-size:.9em}
+.lead{max-width:36em;margin-top:.8em;font-size:1.2em;color:var(--soft)}
+#bar{position:fixed;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem max(5vw,1.25rem);font-size:.8rem;color:#fff;background:rgb(13 27 76/.92)}
+#bar button{padding:.25rem .7rem;border:1px solid #fff;border-radius:99px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+#notes{position:fixed;z-index:4;left:0;right:0;bottom:2.6rem;display:none;max-height:38vh;overflow:auto;padding:1rem max(5vw,1.25rem);background:var(--amber);color:var(--ink);font-size:1.05rem}
+#notes.on{display:block}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+@keyframes in{from{opacity:0}}
+@media(max-width:44rem){.compare,.pair{grid-template-columns:1fr}.slide{justify-content:flex-start}.backing{flex-direction:column;gap:.2rem}}
+@media(prefers-reduced-motion:reduce){.slide.on{animation:none}}
+@media print{body{overflow:visible}.slide{position:relative;display:flex;min-height:100vh;break-after:page}#bar,#notes{display:none!important}}
+</style>
+</head>
+<body>
+<section class="slide on light" data-note="Like viktig som å finne feil er å ikke rope ulv. 14 dager og to uker betyr det samme, og verktøyet lar det være. Det har vi testet live. Et verktøy som flagger alt, slutter folk å stole på.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 7 · Tillit</span><span class="chip chip-live">Testet live 7. nov 2026</span></div>
+    <h2>Ulike ord. Samme vilkår. Ingen alarm.</h2>
+    <div class="compare">
+      <p class="doc same"><small>Tilbudet ditt</small>Betaling innen <mark>14 dager</mark> etter fakturadato.</p>
+      <p class="doc same"><small>Kundens kontrakt</small>Fakturaen forfaller til betaling <mark>to uker</mark> etter fakturadato.</p>
+    </div>
+    <div class="pair">
+      <p class="impact ok"><b>0 funn</b><span>Verktøyet leser hva vilkårene betyr, ikke bare ordene.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>Ingenting. Dette punktet kan du signere.</p></div>
+    </div>
+    <p class="backing"><b>Hvorfor</b><span>Et verktøy som flagger alt, slutter folk å stole på. Testdataene har 11 kontrakter uten endringer for å fange falske alarmer.</span></p>
+  </div>
+</section>
+<aside id="notes" aria-live="polite"></aside>
+<div id="bar"><span>07-ingen-falsk-alarm</span><span><button id="noteBtn" type="button">Manus (N)</button></span></div>
+<script>
+const notes = document.getElementById("notes");
+notes.textContent = document.querySelector(".slide").dataset.note;
+document.getElementById("noteBtn").onclick = () => notes.classList.toggle("on");
+addEventListener("keydown", (e) => { if (e.key.toLowerCase() === "n") notes.classList.toggle("on"); });
+</script>
+</body>
+</html>

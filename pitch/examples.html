@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eksempelslides – Kontraktsstøtte</title>
+<style>
+:root{--navy:#0d1b4c;--coral:#ff4d5e;--amber:#ffc21a;--mint:#6fe3b4;--sky:#9cc4ff;--paper:#f4f6fb;--ink:#14182b;--muted:#5d6480;--soft:#d3d8ee;--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--dots:radial-gradient(circle,rgb(255 255 255/.09) 1.5px,transparent 2px) 0 0/20px 20px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--navy);color:var(--ink);font:clamp(.95rem,1.9vmin,1.35rem)/1.35 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul{margin:0;padding:0}
+.slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;padding:5vmin max(5vw,1.25rem) 8vmin;overflow:auto}
+.slide.on{display:flex;animation:in .3s ease-out}
+.dark{background:var(--dots),var(--navy);color:#fff}.light{background:var(--paper)}
+.inner{width:100%;max-width:76rem;margin:auto}
+h1{max-width:14em;font-size:clamp(2.5rem,9vmin,6.5rem);font-weight:700;line-height:1;letter-spacing:-.04em;text-wrap:balance}h1 span{color:var(--coral)}
+h2{max-width:22em;font-size:clamp(1.8rem,6vmin,4.2rem);font-weight:700;line-height:1.05;letter-spacing:-.035em;text-wrap:balance}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.8em;font-size:.8em;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.kicker{opacity:.7}
+.chip{padding:.25em .8em;border-radius:99px;letter-spacing:.02em;text-transform:none}
+.chip-live{background:var(--mint);color:var(--ink)}.chip-new{border:1.5px solid var(--amber);color:inherit}
+.light .chip-new{border-color:#b98a00}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2em}
+.doc{padding:1em 1.3em;border-radius:1.25rem;background:#fff;color:var(--ink);font-size:1.05em;font-weight:600;line-height:1.3}
+.doc small{display:block;margin-bottom:.45em;font-size:.72em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.light .doc{box-shadow:0 1px 0 var(--soft)}
+.doc mark{padding:0 .2em;border-radius:.2em;background:#ffc2c8;color:inherit}
+.doc.missing{border:2px dashed #c21f34;background:#fff5f6;color:#8a1a28}
+.doc.same mark{background:#c9f5e3}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.impact{padding:1em 1.3em;border-radius:1.25rem;background:var(--navy);color:#fff}
+.dark .impact{background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22)}
+.impact b{display:block;font-size:2.1em;line-height:1.05;letter-spacing:-.03em;color:var(--coral)}
+.impact.ok b{color:var(--mint)}
+.impact span{display:block;margin-top:.35em;color:var(--soft)}
+.reply{padding:1em 1.3em;border-radius:1.25rem;background:var(--amber);color:var(--ink)}
+.reply small{display:block;margin-bottom:.35em;font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.reply p{font-size:1.1em;font-weight:600;line-height:1.28}
+.backing{display:flex;gap:.8rem;margin-top:1rem;padding:.8em 1.1em;border-left:4px solid var(--sky);border-radius:.4rem;background:rgb(156 196 255/.16)}
+.light .backing{border-color:#123fa8;background:#e6edfb}
+.backing b{white-space:nowrap}
+.src{margin-top:.7em;font-size:.75em;opacity:.75}.src a{color:inherit;font-weight:600}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.8rem;margin-top:1.6em;list-style:none}
+.menu a{display:block;height:100%;padding:1em 1.2em;border:1px solid rgb(255 255 255/.25);border-radius:1.25rem;background:rgb(255 255 255/.06);color:#fff;text-decoration:none}
+.menu a:hover{background:rgb(255 255 255/.12)}.menu b{display:block;font-size:1.15em;letter-spacing:-.01em}.menu span{color:var(--soft);font-size:.9em}
+.lead{max-width:36em;margin-top:.8em;font-size:1.2em;color:var(--soft)}
+#bar{position:fixed;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem max(5vw,1.25rem);font-size:.8rem;color:#fff;background:rgb(13 27 76/.92)}
+#bar button{padding:.25rem .7rem;border:1px solid #fff;border-radius:99px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+#notes{position:fixed;z-index:4;left:0;right:0;bottom:2.6rem;display:none;max-height:38vh;overflow:auto;padding:1rem max(5vw,1.25rem);background:var(--amber);color:var(--ink);font-size:1.05rem}
+#notes.on{display:block}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+@keyframes in{from{opacity:0}}
+@media(max-width:44rem){.compare,.pair{grid-template-columns:1fr}.slide{justify-content:flex-start}.backing{flex-direction:column;gap:.2rem}}
+@media(prefers-reduced-motion:reduce){.slide.on{animation:none}}
+@media print{body{overflow:visible}.slide{position:relative;display:flex;min-height:100vh;break-after:page}#bar,#notes{display:none!important}}
+</style>
+</head>
+<body>
+
+<section class="slide dark" data-note="Oversikt. Velg de eksemplene som passer pitchen. Moms-eksempelet ligger allerede i hovedpitchen.">
+  <div class="inner"><h1>Sju ting i en kontrakt du <span>bare skulle signere.</span></h1>
+    <p class="lead">Fiktive tekster, ekte problemer. Hver side viser hva som er endret, hva det betyr og hva du kan svare.</p>
+    <ul class="menu">
+      <li><a href="#2"><b>1 · Betalingsfrist</b><span>14 dager blir 120</span></a></li>
+      <li><a href="#3"><b>2 · Ansvar</b><span>120&nbsp;000&nbsp;kr blir 1&nbsp;000&nbsp;000&nbsp;kr</span></a></li>
+      <li><a href="#4"><b>3 · Rettigheter</b><span>Overføres før betaling</span></a></li>
+      <li><a href="#5"><b>4 · Feil selskap</b><span>Et annet org.nr.</span></a></li>
+      <li><a href="#6"><b>5 · Revisjoner</b><span>Til kunden er fornøyd</span></a></li>
+      <li><a href="#7"><b>6 · Godkjenning</b><span>Ingen frist</span></a></li>
+      <li><a href="#8"><b>7 · Ingen falsk alarm</b><span>14 dager er to uker</span></a></li>
+    </ul></div>
+</section>
+
+<section class="slide light" data-note="Tilbudet sa 14 dager. Kundens standardvilkår sier 120. Loven sier at fristen mellom virksomheter ikke skal overstige 60 dager, med mindre noe annet uttrykkelig er avtalt. Og EU-domstolen sa i 2025 at 120 dager gjemt i standardvilkår som regel ikke er uttrykkelig avtalt. Du har altså et argument, ikke bare en følelse.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 1 · Betaling</span><span class="chip chip-new">Nytt testpar, ikke kjørt live</span></div>
+    <h2>Du blir kundens bank i fire måneder.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>Betalingsbetingelser: 14 dager netto fra fakturadato.</p>
+      <p class="doc"><small>Kundens kontrakt</small>Betaling skjer <mark>120 dager</mark> etter fakturadato, i henhold til Oppdragsgivers standard innkjøpsvilkår.</p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>106 dager lenger</b><span>Du har levert, men venter til neste kvartal på pengene.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«Tilbudet vårt sa 14 dager. Vi kan strekke oss til 30, men ikke 120.»</p></div>
+    </div>
+    <p class="backing"><b>Loven</b><span>Mellom virksomheter skal fristen ikke overstige 60 dager, med mindre noe annet uttrykkelig er avtalt. EU-domstolen (C-677/22, 2025): 120 dager i standardvilkår er som regel ikke uttrykkelig avtalt.</span></p>
+    <p class="src">Kilder: <a href="https://lovdata.no/dokument/NL/lov/1976-12-17-100" target="_blank" rel="noopener">forsinkelsesrenteloven § 2 a</a>, <a href="https://www.danskerhverv.dk/presse-og-nyheder/nyheder/2025/maj/eu-domstolen-med-klar-besked-ensidigt-fastsatte-lange-betalingsfrister-er-no-go/" target="_blank" rel="noopener">Dansk Erhverv om C-677/22</a>. Dommen gjelder direktivet Norge følger gjennom EØS: trolig relevant, ikke direkte bindende. Ikke juridisk rådgivning.</p>
+  </div>
+</section>
+
+<section class="slide dark" data-note="Oppdraget er verdt 120&nbsp;000&nbsp;kroner. Tilbudet begrenset ansvaret til det samme. Kontrakten sier en million per skadetilfelle. Én feil i en bookingløsning kan koste mer enn hele oppdraget, mange ganger. Dette eksempelet har vi kjørt live, og verktøyet fant det.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 2 · Ansvar</span><span class="chip chip-live">Testet live 7. nov 2026</span></div>
+    <h2>Et oppdrag til 120&nbsp;000&nbsp;kr. En risiko på en million.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>Leverandørens samlede ansvar etter oppdraget er begrenset til 120&nbsp;000&nbsp;kr.</p>
+      <p class="doc"><small>Kundens kontrakt</small>Leverandørens erstatningsansvar er begrenset til <mark>1&nbsp;000&nbsp;000&nbsp;kr per skadetilfelle</mark>.</p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>8 × oppdraget</b><span>Og det gjelder per skadetilfelle, ikke samlet.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«Ansvaret vårt bør ikke være større enn oppdragets verdi, 120&nbsp;000&nbsp;kr samlet.»</p></div>
+    </div>
+    <p class="backing"><b>Merk</b><span>Vi har ikke funnet tall på hvor vanlig dette er. Eksempelet viser hvor stor risikoen kan bli, ikke hvor ofte det skjer.</span></p>
+  </div>
+</section>
+
+<section class="slide light" data-note="Tilbudet sa at rettighetene går over når kunden har betalt, og at skisser er designerens. Kontrakten flytter alt over ved signering, også skissene. Betaler ikke kunden, eier de likevel logoen. Etter åndsverkloven beholder du rettighetene til du avtaler noe annet, og det er nettopp denne setningen som er avtalen.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 3 · Rettigheter</span><span class="chip chip-new">Fra testdata, ikke kjørt live</span></div>
+    <h2>Kunden eier logoen før de har betalt for den.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>Rettighetene til det endelige materialet overføres til Oppdragsgiver når fullt vederlag er betalt. Skisser og forkastede forslag forblir Leverandørens eiendom.</p>
+      <p class="doc"><small>Kundens kontrakt</small>Alle rettigheter til materiale utarbeidet under oppdraget, <mark>inkludert skisser og forkastede forslag</mark>, overføres til Oppdragsgiver <mark>ved signering av denne avtalen</mark>.</p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>Du mister pressmiddelet</b><span>Ubetalt faktura, men kunden har allerede rettighetene.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«Rettighetene går over når fullt vederlag er betalt. Skisser og forkastede forslag beholder vi.»</p></div>
+    </div>
+    <p class="backing"><b>Loven</b><span>Etter åndsverkloven beholder du rettighetene til arbeidet ditt til du avtaler at de skal overføres. Kontrakten er den avtalen.</span></p>
+    <p class="src">Kilde: <a href="https://www.orkana.no/wp-content/uploads/2025/12/kap07_frilansjournalisten-fri-og-sarbar.pdf" target="_blank" rel="noopener">«Frilansjournalisten – fri og sårbar», kap. 7 (Orkana 2025)</a>. Ikke juridisk rådgivning.</p>
+  </div>
+</section>
+
+<section class="slide dark" data-note="Tilbudet gikk til Nordkaffe AS. Kontrakten er med Nordkaffe Holding AS, et annet selskap med et annet organisasjonsnummer. Det er det selskapet som skylder deg penger. Har det lite midler, hjelper det ikke at resten av konsernet går godt. Slike detaljer leser nesten ingen.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 4 · Avtalepart</span><span class="chip chip-new">Fra testdata, ikke kjørt live</span></div>
+    <h2>Du jobber for et selskap du aldri sjekket.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>Til: Nordkaffe AS (org.nr. 997 503 118)</p>
+      <p class="doc"><small>Kundens kontrakt</small>Oppdragsgiver: <mark>Nordkaffe Holding AS, org.nr. 996 881 402</mark></p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>Et annet org.nr.</b><span>Det er dette selskapet som skylder deg penger, ikke resten av konsernet.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«Avtalen bør være med Nordkaffe AS, som i tilbudet. Hvis ikke, ber vi om garanti fra morselskapet.»</p></div>
+    </div>
+    <p class="backing"><b>Bakgrunn</b><span>Når en oppdragsgiver ikke kan betale, blir underleverandører ofte stående igjen med ubetalte krav.</span></p>
+    <p class="src">Eksempel: <a href="https://www.tu.no/artikler/entreprenor-sluttet-a-betale-underleverandorene-regningene-vare-ble-mott-med-falske-motkrav-br/499692" target="_blank" rel="noopener">TU: Entreprenør sluttet å betale underleverandørene</a>. Organisasjonsnumrene er fiktive.</p>
+  </div>
+</section>
+
+<section class="slide light" data-note="To revisjonsrunder i tilbudet. I kontrakten: revisjoner til kunden er fornøyd, uten ekstra kostnad. Fastprisen står stille mens timene går. Regneeksempel: planlegger du 24 timer og får fire ekstra runder på fire timer, går timelønnen fra 1 000 til 600 kroner.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 5 · Revisjoner</span><span class="chip chip-live">Testet live 7. nov 2026</span></div>
+    <h2>«Til kunden er fornøyd» har ingen slutt.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>To revisjonsrunder er inkludert.</p>
+      <p class="doc"><small>Kundens kontrakt</small>Kunden kan be om revisjoner <mark>inntil kunden er fornøyd med resultatet, uten ekstra kostnad</mark>.</p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>1 000 → 600 kr/t</b><span>Regneeksempel: 24&nbsp;000&nbsp;kr, 24 timer planlagt, fire ekstra runder på fire timer.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«To runder er inkludert. Flere runder tar vi gjerne, til 1&nbsp;100&nbsp;kr per time.»</p></div>
+    </div>
+    <p class="backing"><b>Merk</b><span>Timene i regneeksempelet er fiktive. Poenget er at fastprisen står stille mens arbeidet vokser.</span></p>
+  </div>
+</section>
+
+<section class="slide dark" data-note="Tilbudet sa at leveransen er godkjent hvis kunden ikke klager innen fem dager. Kontrakten sier at den først er godkjent når kunden bekrefter skriftlig, uten frist. Da er jobben aldri formelt ferdig før kunden sier det. Dette er et punkt som må avklares, ikke nødvendigvis et nei.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 6 · Godkjenning</span><span class="chip chip-new">Fra testdata, ikke kjørt live</span></div>
+    <h2>Når er jobben ferdig? Når kunden sier det.</h2>
+    <div class="compare">
+      <p class="doc"><small>Tilbudet ditt</small>Leveransen anses godkjent dersom Oppdragsgiver ikke har meldt skriftlige innsigelser innen 5 dager etter levering.</p>
+      <p class="doc"><small>Kundens kontrakt</small>Leveransen er <mark>først godkjent når Oppdragsgiver har bekreftet dette skriftlig</mark>.</p>
+    </div>
+    <div class="pair">
+      <p class="impact"><b>Ingen frist</b><span>Kunden kan vente med å godkjenne, og du vet ikke når jobben er ferdig.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>«Leveransen regnes som godkjent hvis vi ikke har fått skriftlige innsigelser innen 5 dager.»</p></div>
+    </div>
+    <p class="backing"><b>Status</b><span>Må avklares. Ikke nødvendigvis et nei, men det bør stå en frist.</span></p>
+  </div>
+</section>
+
+<section class="slide light" data-note="Like viktig som å finne feil er å ikke rope ulv. 14 dager og to uker betyr det samme, og verktøyet lar det være. Det har vi testet live. Et verktøy som flagger alt, slutter folk å stole på.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Eksempel 7 · Tillit</span><span class="chip chip-live">Testet live 7. nov 2026</span></div>
+    <h2>Ulike ord. Samme vilkår. Ingen alarm.</h2>
+    <div class="compare">
+      <p class="doc same"><small>Tilbudet ditt</small>Betaling innen <mark>14 dager</mark> etter fakturadato.</p>
+      <p class="doc same"><small>Kundens kontrakt</small>Fakturaen forfaller til betaling <mark>to uker</mark> etter fakturadato.</p>
+    </div>
+    <div class="pair">
+      <p class="impact ok"><b>0 funn</b><span>Verktøyet leser hva vilkårene betyr, ikke bare ordene.</span></p>
+      <div class="reply"><small>Det du kan svare</small><p>Ingenting. Dette punktet kan du signere.</p></div>
+    </div>
+    <p class="backing"><b>Hvorfor</b><span>Et verktøy som flagger alt, slutter folk å stole på. Testdataene har 11 kontrakter uten endringer for å fange falske alarmer.</span></p>
+  </div>
+</section>
+
+<aside id="notes" aria-live="polite"></aside>
+<div id="bar"><span id="count"></span><span><button id="noteBtn" type="button">Manus (N)</button> <button id="prev" type="button">Forrige</button> <button id="next" type="button">Neste</button></span></div>
+<script>
+const slides = [...document.querySelectorAll(".slide")], notes = document.getElementById("notes"), count = document.getElementById("count");
+function fromHash() { return Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1); }
+let i = fromHash();
+function show(n) {
+  i = Math.min(Math.max(n, 0), slides.length - 1);
+  slides.forEach((s, k) => s.classList.toggle("on", k === i));
+  notes.textContent = slides[i].dataset.note;
+  count.textContent = `${i + 1} / ${slides.length}`;
+  history.replaceState(null, "", `#${i + 1}`);
+}
+document.getElementById("prev").onclick = () => show(i - 1);
+document.getElementById("next").onclick = () => show(i + 1);
+document.getElementById("noteBtn").onclick = () => notes.classList.toggle("on");
+addEventListener("hashchange", () => show(fromHash()));
+addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(i + 1); }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) show(i - 1);
+  if (e.key.toLowerCase() === "n") notes.classList.toggle("on");
+});
+show(i);
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fra nyhetene – Kontraktsstøtte</title>
+<style>
+:root{--navy:#0d1b4c;--coral:#ff4d5e;--amber:#ffc21a;--mint:#6fe3b4;--sky:#9cc4ff;--paper:#f4f6fb;--ink:#14182b;--muted:#5d6480;--soft:#d3d8ee;--font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--dots:radial-gradient(circle,rgb(255 255 255/.09) 1.5px,transparent 2px) 0 0/20px 20px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--navy);color:var(--ink);font:clamp(.9rem,1.75vmin,1.25rem)/1.35 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul,blockquote{margin:0;padding:0}
+.slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;padding:4.5vmin max(5vw,1.25rem) 8vmin;overflow:auto}
+.slide.on{display:flex;animation:in .3s ease-out}
+.dark{background:var(--dots),var(--navy);color:#fff}.light{background:var(--paper)}
+.inner{width:100%;max-width:78rem;margin:auto}
+h1{max-width:14em;font-size:clamp(2.5rem,9vmin,6.5rem);font-weight:700;line-height:1;letter-spacing:-.04em;text-wrap:balance}h1 span{color:var(--coral)}
+h2{max-width:22em;font-size:clamp(1.7rem,5.4vmin,3.8rem);font-weight:700;line-height:1.05;letter-spacing:-.035em;text-wrap:balance}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.8em;font-size:.8em;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.kicker{opacity:.7}
+.chip{padding:.25em .8em;border-radius:99px;letter-spacing:.02em;text-transform:none;background:var(--sky);color:var(--ink)}
+.split{display:grid;grid-template-columns:1fr 1.15fr;gap:1rem;margin-top:1.2em;align-items:start}
+.card{padding:1.1em 1.3em;border-radius:1.25rem;background:#fff;color:var(--ink)}
+.dark .story{background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22);color:#fff}
+.light .story{box-shadow:0 1px 0 var(--soft)}
+.label{display:block;margin-bottom:.5em;font-size:.72em;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.7}
+.story ul{padding-left:1.1em}.story li{margin-top:.35em}.story li::marker{color:var(--coral)}
+.story blockquote{margin-top:.9em;padding-left:.9em;border-left:3px solid var(--amber);font-size:1.05em;font-weight:600;line-height:1.3}
+.story blockquote span{display:block;margin-top:.3em;font-size:.8em;font-weight:400;opacity:.8}
+.right{display:grid;gap:.7rem}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.doc{padding:.85em 1.1em;border-radius:1rem;background:#fff;color:var(--ink);font-weight:600;line-height:1.3}
+.light .doc{box-shadow:0 1px 0 var(--soft)}
+.doc small{display:block;margin-bottom:.4em;font-size:.7em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.doc mark{padding:0 .2em;border-radius:.2em;background:#ffc2c8;color:inherit}
+.verdict{padding:.85em 1.1em;border-radius:1rem;background:var(--navy);color:#fff}
+.dark .verdict{background:#fff;color:var(--ink)}
+.verdict b{display:inline-block;margin-right:.4em;padding:.1em .6em;border-radius:99px;background:var(--coral);color:var(--ink);font-size:.85em}
+.verdict b.check{background:var(--amber)}
+.reply{padding:.85em 1.1em;border-radius:1rem;background:var(--amber);color:var(--ink);font-weight:600}
+.reply small{display:block;margin-bottom:.3em;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.fine{margin-top:.9em;font-size:.75em;opacity:.78}.fine a{color:inherit;font-weight:600}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.8rem;margin-top:1.6em;list-style:none}
+.menu a{display:block;height:100%;padding:1em 1.2em;border:1px solid rgb(255 255 255/.25);border-radius:1.25rem;background:rgb(255 255 255/.06);color:#fff;text-decoration:none}
+.menu a:hover{background:rgb(255 255 255/.12)}.menu b{display:block;font-size:1.1em}.menu span{color:var(--soft);font-size:.9em}
+.lead{max-width:38em;margin-top:.8em;font-size:1.2em;color:var(--soft)}
+#bar{position:fixed;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem max(5vw,1.25rem);font-size:.8rem;color:#fff;background:rgb(13 27 76/.92)}
+#bar button{padding:.25rem .7rem;border:1px solid #fff;border-radius:99px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+#notes{position:fixed;z-index:4;left:0;right:0;bottom:2.6rem;display:none;max-height:38vh;overflow:auto;padding:1rem max(5vw,1.25rem);background:var(--amber);color:var(--ink);font-size:1.05rem}
+#notes.on{display:block}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+@keyframes in{from{opacity:0}}
+@media(max-width:52rem){.split,.docs{grid-template-columns:1fr}.slide{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.slide.on{animation:none}}
+@media print{body{overflow:visible}.slide{position:relative;display:flex;min-height:100vh;break-after:page}#bar,#notes{display:none!important}}
+</style>
+</head>
+<body>
+
+<section class="slide dark" data-note="Oversikt. Venstre side på hver slide er en ekte sak fra nyhetene. Høyre side er en fiktiv kontrakt som viser hvor verktøyet kunne hjulpet.">
+  <div class="inner"><h1>Fra nyhetene til <span>kontrakten din.</span></h1>
+    <p class="lead">Ekte saker fra Norden. Til høyre på hver side: en fiktiv kontrakt som viser hva verktøyet ville pekt på.</p>
+    <ul class="menu">
+      <li><a href="#2"><b>Serneke-konkursen</b><span>SVT og Företagarna</span></a></li>
+      <li><a href="#3"><b>80 dager hos storselskapene</b><span>Företagaren</span></a></li>
+      <li><a href="#4"><b>Lovet 30, betaler etter 90</b><span>Realtid / Di</span></a></li>
+      <li><a href="#5"><b>2,8 timer i uka</b><span>SMVdanmark</span></a></li>
+      <li><a href="#6"><b>120 dager i standardvilkår</b><span>EU-domstolen</span></a></li>
+    </ul></div>
+</section>
+
+<section class="slide light" data-note="Serneke var Sveriges femte største byggeselskap og gikk konkurs i januar 2025. En smed i Varberg leverte en stålkonstruksjon for rundt 3,5 millioner svenske kroner, fikk 1,4 millioner etter mye mas, og tapte rundt 1,8 millioner. Nå krever boet de 1,4 millionene tilbake. Bostyreren sier selv at Serneke nesten aldri betalte på forfallsdato. En kontrakt stopper ikke en konkurs. Men den bestemmer hvor mye du har levert uten å få betalt når det skjer.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Ekte sak</span><span class="chip">SVT 11.12.2025 · Företagarna 14.01.2026</span></div>
+    <h2>Han leverte stålet. Nå vil konkursboet ha pengene tilbake.</h2>
+    <div class="split">
+      <div class="card story"><span class="label">Hva skjedde</span><ul>
+        <li>Byggeselskapet Serneke, Sveriges femte største, gikk konkurs i januar 2025.</li>
+        <li>En smedbedrift leverte stål for ca. 3,5 mill. SEK, fikk 1,4 mill. etter press og tapte ca. 1,8 mill.</li>
+        <li>Boet krever 1,4 mill. tilbake. Over 200 bedrifter er bedt om å betale tilbake over 2 mrd. SEK.</li></ul>
+        <blockquote>«Serneke har i princip aldrig betalt på de datum som man har satt ut som förfallodatum.»<span>Johan Sölveland, bostyrer, til SVT</span></blockquote></div>
+      <div class="right">
+        <div class="docs">
+          <p class="doc"><small>Tilbudet ditt (fiktivt)</small>Fakturering månedlig. Ved betaling mer enn 14 dager over forfall kan Leverandøren stanse arbeidet.</p>
+          <p class="doc"><small>Kundens kontrakt (fiktiv)</small>Leverandøren fakturerer <mark>samlet ved ferdigstillelse</mark>.</p>
+        </div>
+        <p class="verdict"><b>Avvik</b>Du får betalt først når alt er levert, og retten til å stanse arbeidet er borte.</p>
+        <p class="reply"><small>Det du kan svare</small>«Vi fakturerer månedlig og stanser arbeidet hvis en faktura er mer enn 14 dager over forfall.»</p>
+      </div>
+    </div>
+    <p class="fine">Kilder: <a href="https://www.svt.se/nyheter/lokalt/vast/lars-gorans-foretag-kravs-pa-miljonbelopp-efter-sernekes-konkurs-huvudlost" target="_blank" rel="noopener">SVT Väst</a>, <a href="https://www.foretagarna.se/nyheter/riks/2026/januari/det-liknar-utpressning-mot-smaforetag/" target="_blank" rel="noopener">Företagarna</a>. En kontrakt stopper ikke en konkurs eller et krav fra boet. Den begrenser hvor mye du har levert uten betaling.</p>
+  </div>
+</section>
+
+<section class="slide dark" data-note="Tidningen Företagaren gikk gjennom de 100 største svenske selskapene med tall fra Bolagsverket. Sju av ti lar mikrobedrifter vente mer enn 30 dager i snitt. Ericsson og Sandvik ligger rundt 80 dager, og Ericsson fikk mellomstore leverandører til å godta 89 dagers frist. Små leverandører føler at de ikke har noe valg. Vi vil gi dem et grunnlag for å si nei, eller i det minste forhandle.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Ekte sak</span><span class="chip">Företagaren 16.12.2025 · tall fra Bolagsverket</span></div>
+    <h2>Små leverandører blir bank for de store.</h2>
+    <div class="split">
+      <div class="card story"><span class="label">Hva skjedde</span><ul>
+        <li>Sju av ti av Sveriges største selskaper lar mikrobedrifter vente mer enn 30 dager i snitt.</li>
+        <li>Ericsson og Sandvik: rundt 80 dager før betaling.</li>
+        <li>Ericsson fikk mellomstore leverandører til å godta 89 dagers frist.</li></ul>
+        <blockquote>«Den signal vi får från våra företagare är att de inte har så mycket val.»<span>Patrick Krassén, Företagarna</span></blockquote></div>
+      <div class="right">
+        <div class="docs">
+          <p class="doc"><small>Tilbudet ditt (fiktivt)</small>Betaling 30 dager netto.</p>
+          <p class="doc"><small>Kundens kontrakt (fiktiv)</small>Betalingsfrist er <mark>90 dager netto</mark> fra mottatt faktura.</p>
+        </div>
+        <p class="verdict"><b>Avvik</b>Tre ganger så lang frist. Over lovens utgangspunkt på 60 dager mellom virksomheter.</p>
+        <p class="reply"><small>Det du kan svare</small>«Tilbudet vårt sa 30 dager. 90 dager kan vi ikke godta.»</p>
+      </div>
+    </div>
+    <p class="fine">Kilde: <a href="https://www.foretagarna.se/nyheter/riks/2025/december/storbolagen-betaltider-sinkar-smaforetagen/" target="_blank" rel="noopener">Företagarna</a>. Norsk lov: <a href="https://lovdata.no/dokument/NL/lov/1976-12-17-100" target="_blank" rel="noopener">forsinkelsesrenteloven § 2 a</a>, høyst 60 dager med mindre noe annet uttrykkelig er avtalt. Ikke juridisk rådgivning.</p>
+  </div>
+</section>
+
+<section class="slide light" data-note="Lastebilprodusenten Traton hadde skrevet under på en bransjekode om å betale innen 30 dager. Snittet var rundt 50 dager. Ifølge Dagens Industri betaler de nå etter 90 dager eller mer. Scania sier at små og mellomstore leverandører fortsatt skal få betalt innen 30 dager, så dette rammer særlig større leverandører. Poenget for oss: vilkår kan endres underveis. Sjekk om kontrakten lar kunden gjøre det alene.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Ekte sak</span><span class="chip">Realtid 07.10.2024 · etter Dagens Industri</span></div>
+    <h2>Lovet 30 dager. Betaler etter 90.</h2>
+    <div class="split">
+      <div class="card story"><span class="label">Hva skjedde</span><ul>
+        <li>Lastebilprodusenten Traton hadde signert en bransjekode om betaling innen 30 dager.</li>
+        <li>Snittet var ca. 50 dager. Nå betales fakturaer etter 90 dager eller mer.</li>
+        <li>Scania sier små og mellomstore leverandører fortsatt skal få betalt innen 30 dager.</li></ul>
+        <blockquote>«… tvingas agera bank åt storbolagen.»<span>Peter Bryntesson, FKG, om leverandørene</span></blockquote></div>
+      <div class="right">
+        <div class="docs">
+          <p class="doc"><small>Tilbudet ditt (fiktivt)</small>Betaling 30 dager netto.</p>
+          <p class="doc"><small>Kundens kontrakt (fiktiv)</small>Betaling 30 dager netto. <mark>Oppdragsgiver kan endre betalingsvilkårene med 30 dagers skriftlig varsel.</mark></p>
+        </div>
+        <p class="verdict"><b class="check">Må avklares</b>Fristen er lik i dag, men kunden kan endre den alene.</p>
+        <p class="reply"><small>Det du kan svare</small>«Endringer i betalingsvilkårene må avtales skriftlig av begge parter.»</p>
+      </div>
+    </div>
+    <p class="fine">Kilde: <a href="https://www.realtid.se/bors-finans/traton-pressar-leverantorer-med-forlangda-betaltider/" target="_blank" rel="noopener">Realtid</a>, basert på opplysninger til Dagens Industri. Vi vet ikke hvordan Traton endret vilkårene. Kontraktsteksten til høyre er vårt eget eksempel.</p>
+  </div>
+</section>
+
+<section class="slide dark" data-note="SMVdanmark la fram tall 1. november 2026. Små og mellomstore bedrifter bruker i snitt 2,8 timer i uka på å jage kunder som ikke betaler. Det tilsvarer rundt 12 milliarder danske kroner i året. Blant dem som er rammet, har 17 prosent hatt direkte tap, og 10 prosent sier at driften var truet. Derfor er forsinkelsesrente viktig: den gir kunden en grunn til å betale i tide. I Norge regnes et vilkår som fjerner forsinkelsesrenten alltid som urimelig.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Ekte sak</span><span class="chip">SMVdanmark via Ritzau 01.11.2026</span></div>
+    <h2>2,8 timer i uka på å jage egne penger.</h2>
+    <div class="split">
+      <div class="card story"><span class="label">Hva skjedde</span><ul>
+        <li>Danske SMV-er bruker i snitt 2,8 timer i uka på å følge opp kunder som ikke betaler.</li>
+        <li>Samlet tidskostnad: ca. 12 mrd. DKK i året.</li>
+        <li>Blant de rammede har 17 % hatt direkte tap, og 10 % sier at driften var truet.</li></ul>
+        <blockquote>«… bliver den i praksis tvunget til at finansiere kunden.»<span>Jakob Brandt, SMVdanmark</span></blockquote></div>
+      <div class="right">
+        <div class="docs">
+          <p class="doc"><small>Tilbudet ditt (fiktivt)</small>Ved forsinket betaling beregnes forsinkelsesrente etter loven.</p>
+          <p class="doc"><small>Kundens kontrakt (fiktiv)</small><mark>Det beregnes ikke renter eller gebyrer ved forsinket betaling.</mark></p>
+        </div>
+        <p class="verdict"><b>Avvik</b>Kunden taper ingenting på å betale sent. Et slikt vilkår regnes i Norge alltid som urimelig.</p>
+        <p class="reply"><small>Det du kan svare</small>«Vi beholder forsinkelsesrenten etter loven. Det er vanlig mellom bedrifter.»</p>
+      </div>
+    </div>
+    <p class="fine">Kilder: <a href="https://via.ritzau.dk/pressemeddelelse/15259916/ny-analyse-darlige-betalingsvaner-koster-smverne-12-mia-kr-om-aret?lang=da" target="_blank" rel="noopener">SMVdanmark / Ritzau</a>, <a href="https://lovdata.no/dokument/NL/lov/1976-12-17-100" target="_blank" rel="noopener">forsinkelsesrenteloven § 4 a</a>. Danske tall, ikke norske. Ikke juridisk rådgivning.</p>
+  </div>
+</section>
+
+<section class="slide light" data-note="EU-domstolen behandlet en sak fra Polen der kunden hadde satt 120 dagers betalingsfrist i sine standardkontrakter. Regelen er at mer enn 60 dager må være uttrykkelig avtalt. Domstolen sa at standardvilkår leverandøren ikke reelt kunne forhandle, som regel ikke oppfyller det kravet, med mindre klausulen er tydelig fremhevet. Norge følger det samme direktivet gjennom EØS. Men å vinne etterpå er dyrt. Det er billigere å se det før du signerer.">
+  <div class="inner">
+    <div class="top"><span class="kicker">Ekte sak</span><span class="chip">EU-domstolen C-677/22 · 06.02.2025</span></div>
+    <h2>120 dager i standardvilkårene holdt ikke i retten.</h2>
+    <div class="split">
+      <div class="card story"><span class="label">Hva skjedde</span><ul>
+        <li>En polsk kunde satte 120 dagers betalingsfrist i sine standardkontrakter.</li>
+        <li>Over 60 dager er bare lov når det er uttrykkelig avtalt.</li>
+        <li>Domstolen: standardvilkår leverandøren ikke reelt kunne forhandle, oppfyller som regel ikke kravet, med mindre klausulen er tydelig fremhevet.</li></ul>
+        <blockquote>Fristen må være avtalt «på et velinformeret grundlag».<span>Dansk Erhverv om dommen</span></blockquote></div>
+      <div class="right">
+        <div class="docs">
+          <p class="doc"><small>Tilbudet ditt (fiktivt)</small>Betalingsbetingelser: 14 dager netto fra fakturadato.</p>
+          <p class="doc"><small>Kundens kontrakt (fiktiv)</small>Vedlegg 3, punkt 14.2: Betaling skjer <mark>120 dager</mark> etter mottatt faktura.</p>
+        </div>
+        <p class="verdict"><b>Avvik</b>Gjemt i et vedlegg. Tar du med vedlegget, finner verktøyet det og viser sitatet.</p>
+        <p class="reply"><small>Det du kan svare</small>«Tilbudet vårt sa 14 dager. 120 dager i vedlegget godtar vi ikke.»</p>
+      </div>
+    </div>
+    <p class="fine">Kilde: <a href="https://www.danskerhverv.dk/presse-og-nyheder/nyheder/2025/maj/eu-domstolen-med-klar-besked-ensidigt-fastsatte-lange-betalingsfrister-er-no-go/" target="_blank" rel="noopener">Dansk Erhverv</a>. Dommen gjelder direktivet Norge følger gjennom EØS: trolig relevant, ikke direkte bindende. Å vinne i retten etterpå er dyrt, så det lønner seg å se det før du signerer.</p>
+  </div>
+</section>
+
+<aside id="notes" aria-live="polite"></aside>
+<div id="bar"><span id="count"></span><span><button id="noteBtn" type="button">Manus (N)</button> <button id="prev" type="button">Forrige</button> <button id="next" type="button">Neste</button></span></div>
+<script>
+const slides = [...document.querySelectorAll(".slide")], notes = document.getElementById("notes"), count = document.getElementById("count");
+function fromHash() { return Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1); }
+let i = fromHash();
+function show(n) {
+  i = Math.min(Math.max(n, 0), slides.length - 1);
+  slides.forEach((s, k) => s.classList.toggle("on", k === i));
+  notes.textContent = slides[i].dataset.note;
+  count.textContent = `${i + 1} / ${slides.length}`;
+  history.replaceState(null, "", `#${i + 1}`);
+}
+document.getElementById("prev").onclick = () => show(i - 1);
+document.getElementById("next").onclick = () => show(i + 1);
+document.getElementById("noteBtn").onclick = () => notes.classList.toggle("on");
+addEventListener("hashchange", () => show(fromHash()));
+addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(i + 1); }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) show(i - 1);
+  if (e.key.toLowerCase() === "n") notes.classList.toggle("on");
+});
+show(i);
+</script>
+</body>
+</html>
